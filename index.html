@@ -3,430 +3,403 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Great Scholars Portal</title>
+<title>Class Portal</title>
 <style>
-body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-.container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
-h1, h2, h3 { color: #333; }
+:root {
+  --primary: #4CAF50;
+  --primary-dark: #388E3C;
+  --accent: #2196F3;
+  --warning: #FFC107;
+  --danger: #f44336;
+  --bg: #f0f4f8;
+  --card: #ffffff;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #76b852 100%);
+  min-height: 100vh;
+  margin: 0;
+}
+
+.container {
+  max-width: 850px;
+  margin: auto;
+  background: var(--card);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+h2 {
+  color: var(--primary-dark);
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+h3, h4 {
+  color: #333;
+}
+
+input, select, button, textarea {
+  padding: 12px;
+  margin: 8px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(33,150,243,0.1);
+}
+
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
 .hidden { display: none; }
-input, select, textarea, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-textarea { height: 80px; resize: vertical; }
-button { background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 4px; }
-button:hover { background: #45a049; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-th { background: #4CAF50; color: white; }
-.story-card, .assignment-card, .admin-card { background: #e8f5e9; padding: 15px; margin: 10px 0; border-radius: 5px; }
-.logout { background: #f44336; }
-.logout:hover { background: #d32f2f; }
-hr { margin: 30px 0; border: 0; border-top: 1px solid #ddd; }
-.flex { display: flex; gap: 10px; flex-wrap: wrap; }
-.flex > div { flex: 1; min-width: 250px; }
+
+.section {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 10px;
+  background: var(--bg);
+  border-left: 5px solid var(--accent);
+}
+
+.section h4 {
+  margin-top: 0;
+  color: var(--accent);
+}
+
+.story {
+  background: #e8f5e9;
+  padding: 12px;
+  margin: 10px 0;
+  border-left: 4px solid var(--primary);
+  border-radius: 6px;
+}
+
+.admin-box {
+  background: #fff8e1;
+  border-left: 5px solid var(--warning);
+}
+
+.admin-box h4 { color: #f57c00; }
+
+.student-list {
+  background: #e3f2fd;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border-left: 4px solid var(--accent);
+}
+
+.back-btn {
+  background: #6c757d;
+  margin-bottom: 15px;
+  width: auto;
+  padding: 8px 18px;
+}
+
+.back-btn:hover {
+  background: #5a6268;
+}
+
+.login-box {
+  background: linear-gradient(135deg, #e3f2fd 0%, #e8f5e9 100%);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+label {
+  font-weight: 600;
+  color: #555;
+  display: block;
+  margin-top: 10px;
+}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>Great Scholars Portal</h1>
-  
-  <div id="loginSection">
-    <h2>Login</h2>
-    <select id="role" onchange="login()">
+  <h2>📚 Class Portal</h2>
+
+  <div id="loginScreen" class="login-box">
+    <h3>Login</h3>
+    <label>Role:</label>
+    <select id="role">
       <option value="">Select Role</option>
-      <option value="Admin">Admin</option>
-      <option value="Student">Student</option>
+      <option value="admin">Admin</option>
+      <option value="student">Student</option>
     </select>
 
     <div id="adminLogin" class="hidden">
+      <label>Username:</label>
       <input type="text" id="adminUser" placeholder="Username">
+      <label>Password:</label>
       <input type="password" id="adminPass" placeholder="Password">
-      <button onclick="adminLogin()">Login</button>
     </div>
 
     <div id="studentLogin" class="hidden">
-      <select id="studentClass"></select>
-      <select id="studentName"></select>
-      <input type="password" id="studentPasscode" placeholder="Passcode">
-      <button onclick="studentLogin()">Login</button>
+      <label>Class:</label>
+      <select id="studentClass">
+        <option value="">Select Class</option>
+        <option value="Basic Six">Basic Six</option>
+      </select>
+
+      <label>Student:</label>
+      <select id="studentName">
+        <option value="">Select Student</option>
+      </select>
+
+      <label>Passcode:</label>
+      <input type="password" id="studentPass" placeholder="4-digit Passcode" maxlength="4">
     </div>
+
+    <button onclick="login()">Login</button>
   </div>
 
-  <div id="dashboard" class="hidden">
-    <button class="logout" onclick="logout()">Logout</button>
-    
+  <div id="portal" class="hidden">
+    <button class="back-btn" onclick="logout()">← Back</button>
+    <h3 id="welcome"></h3>
+
     <div id="adminPanel" class="hidden">
-      <h2>Admin Panel</h2>
-      
-      <div class="flex">
-        <div class="admin-card">
-          <h3>Add Student</h3>
-          <select id="newStudentClass"></select>
-          <input type="text" id="newStudentName" placeholder="Student Full Name">
-          <input type="text" id="newStudentPasscode" placeholder="4-digit Passcode">
-          <button onclick="addStudent()">Add Student</button>
-        </div>
-        
-        <div class="admin-card">
-          <h3>Add Subject</h3>
-          <input type="text" id="newSubject" placeholder="Subject Name">
-          <button onclick="addSubject()">Add Subject</button>
-        </div>
+      <div class="section admin-box">
+        <h4>➕ Add Student</h4>
+        <input type="text" id="newStudentName" placeholder="Student Name">
+        <input type="text" id="newStudentPass" placeholder="4-digit Passcode" maxlength="4">
+        <button onclick="addStudent()">Add Student</button>
+      </div>
+
+      <div class="section admin-box">
+        <h4>➕ Add Subject</h4>
+        <input type="text" id="newSubject" placeholder="Subject Name">
+        <button onclick="addSubject()">Add Subject</button>
+      </div>
+
+      <div class="section admin-box">
+        <h4>👥 View My Students</h4>
+        <button onclick="viewStudents()">Show All Students</button>
+        <div id="studentList" class="student-list hidden"></div>
+      </div>
+
+      <div class="section">
+        <h4>📝 Post Assignment</h4>
+        <select id="assignSubject"></select>
+        <textarea id="assignmentText" placeholder="Assignment details" rows="3"></textarea>
+        <button onclick="postAssignment()">Post Assignment</button>
       </div>
     </div>
-    
+
     <div id="studentPanel" class="hidden">
-      <h2>Student Dashboard</h2>
-      <div id="results"></div>
-      <div id="stories">
-        <h3>Stories</h3>
-        <select id="storyCategory" onchange="loadStories()">
+      <div class="section">
+        <h4>📝 Assignments</h4>
+        <div id="assignmentList">No assignments yet.</div>
+      </div>
+
+      <div class="section">
+        <h4>📖 Stories</h4>
+        <select id="storySubject" onchange="loadStory()">
           <option value="">Select Subject</option>
           <option value="Nigerian History">Nigerian History</option>
         </select>
-        <div id="storiesList"></div>
+        <div id="storyContent"></div>
       </div>
     </div>
-
-    <hr>
-    <div id="assignmentSection"></div>
   </div>
 </div>
 
 <script>
-let currentUser = null;
-const classes = ["Basic 1", "Basic 2", "Basic 3", "Basic 4", "Basic 5", "Basic 6", "JSS 1", "JSS 2", "JSS 3", "SSS 1", "SSS 2", "SSS 3"];
-let subjects = ["Maths", "English", "Basic Science", "Social Studies", "Nigerian History", "Civic Education", "Agricultural Science", "Computer Studies", "Prevocational Studies", "CCA"];
-
-const db = {
-  students: [
-    {username: "Asikhia Diamond", passcode: "4821", class: "Basic 6"},
-    {username: "Ogedengbe Success", passcode: "7394", class: "Basic 6"},
-    {username: "Mbah Favour", passcode: "5610", class: "Basic 6"},
-    {username: "Odion Praise", passcode: "9283", class: "Basic 6"},
-    {username: "Omosigho Trinity", passcode: "3746", class: "Basic 6"},
-    {username: "Igbinoba Osasenaga", passcode: "8152", class: "Basic 6"},
-    {username: "Sumape Miracle", passcode: "6409", class: "Basic 6"},
-    {username: "Alo Chinonso", passcode: "2974", class: "Basic 6"},
-    {username: "Ifada Sonia", passcode: "6831", class: "Basic 6"},
-    {username: "Ike Favour", passcode: "1507", class: "Basic 6"},
-    {username: "Aigbe God's Time", passcode: "9462", class: "Basic 6"},
-    {username: "Isioma Great Honour", passcode: "3728", class: "Basic 6"},
-    {username: "Abu Fadilat", passcode: "5890", class: "Basic 6"},
-    {username: "Edet Rose", passcode: "7241", class: "Basic 6"},
-    {username: "Erhun George", passcode: "0365", class: "Basic 6"}
-  ],
-  results: [],
-  fees: [],
-  assignments: [],
-  submissions: []
-};
-
-const stories = {
-  "Nigerian History": [
-    {title: "Nigerian Civil War", content: "The Nigerian Civil War lasted from 1967 to 1970."},
-    {title: "First Republic", content: "Nigeria gained independence in 1960 and became a republic in 1963."},
-    {title: "Second Republic", content: "The Second Republic ran from 1979 to 1983."},
-    {title: "Past Leaders", content: "Nigeria has had many leaders since independence."}
+let students = {
+  "Basic Six": [
+    {name: "Asikhia Diamond", pass: "1234"},
+    {name: "Ogedengbe Success", pass: "5678"},
+    {name: "Mbah Favour", pass: "9012"},
+    {name: "Ike Favour", pass: "3456"},
+    {name: "Sumape Miracle", pass: "7890"},
+    {name: "Abu Fadilat", pass: "2345"},
+    {name: "Igbinonba Osasenaga", pass: "6789"},
+    {name: "Alo Chinonso", pass: "0123"},
+    {name: "Omosigho Trinity", pass: "4567"},
+    {name: "Odion Praise", pass: "8901"},
+    {name: "Ifada Sonia", pass: "2346"},
+    {name: "Aigbe God's Time", pass: "6780"},
+    {name: "Erhun George", pass: "1122"},
+    {name: "Izevbuwa Daisy", pass: "3344"},
+    {name: "Edet Rose", pass: "5566"}
   ]
 };
 
+let subjects = ["Mathematics", "English", "Prevocational Studies", "CCA"];
+let assignments = [];
+let stories = {
+  "Nigerian History": [
+    "Story 1: The story of Moremi and her sacrifice for Ile-Ife.",
+    "Story 2: How the River Niger got its name."
+  ]
+};
+
+const adminUser = "admin";
+const adminPass = "admin123";
+
 function login() {
-  const role = document.getElementById('role').value;
-  if(role==='Admin') {
-    document.getElementById('adminLogin').classList.remove('hidden');
-    document.getElementById('studentLogin').classList.add('hidden');
-  } else if(role==='Student') {
-    document.getElementById('studentLogin').classList.remove('hidden');
-    document.getElementById('adminLogin').classList.add('hidden');
-    
-    const classSel = document.getElementById('studentClass');
-    classSel.innerHTML = '<option value="">Select Class</option>' + 
-      classes.map(c => `<option value="${c}">${c}</option>`).join('');
-    
-    classSel.onchange = function() {
-      const selectedClass = this.value;
-      const studentSel = document.getElementById('studentName');
-      studentSel.innerHTML = '<option value="">Select Name</option>';
-      
-      if(selectedClass) {
-        const studentsInClass = db.students.filter(s => s.class === selectedClass);
-        studentSel.innerHTML += studentsInClass.map(s => 
-          `<option value="${s.username}">${s.username}</option>`
-        ).join('');
-      }
-    };
+  const role = document.getElementById("role").value;
+
+  if (role === "admin") {
+    const user = document.getElementById("adminUser").value;
+    const pass = document.getElementById("adminPass").value;
+    if (user === adminUser && pass === adminPass) {
+      showPortal("admin", "Admin");
+    } else {
+      alert("Wrong admin credentials");
+    }
+  }
+
+  if (role === "student") {
+    const cls = document.getElementById("studentClass").value;
+    const name = document.getElementById("studentName").value;
+    const pass = document.getElementById("studentPass").value;
+    const student = students[cls]?.find(s => s.name === name && s.pass === pass);
+    if (student) {
+      showPortal("student", name);
+    } else {
+      alert("Wrong student details or passcode");
+    }
   }
 }
 
-function adminLogin() {
-  const user = document.getElementById('adminUser').value;
-  const pass = document.getElementById('adminPass').value;
-  if(user==='admin' && pass==='admin123') {
-    currentUser = {username: 'admin', role: 'Admin'};
-    showDashboard();
-  } else {
-    alert('Invalid admin credentials');
-  }
-}
+function showPortal(role, name) {
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("portal").classList.remove("hidden");
+  document.getElementById("welcome").innerText = `Welcome, ${name}`;
 
-function studentLogin() {
-  const username = document.getElementById('studentName').value;
-  const passcode = document.getElementById('studentPasscode').value;
-  const user = db.students.find(s => s.username===username && s.passcode===passcode);
-  if(user) {
-    currentUser = user;
-    showDashboard();
-  } else {
-    alert('Invalid name or passcode');
+  if (role === "admin") {
+    document.getElementById("adminPanel").classList.remove("hidden");
+    updateSubjectDropdowns();
   }
-}
-
-function showDashboard() {
-  document.getElementById('loginSection').classList.add('hidden');
-  document.getElementById('dashboard').classList.remove('hidden');
-  
-  if(currentUser.role==='Admin') {
-    document.getElementById('adminPanel').classList.remove('hidden');
-    loadAdminForms();
-    loadTeacherAssignments();
-  } else {
-    document.getElementById('studentPanel').classList.remove('hidden');
-    loadResults();
-    loadStudentAssignments();
+  if (role === "student") {
+    document.getElementById("studentPanel").classList.remove("hidden");
+    loadAssignments();
   }
-}
-
-function loadAdminForms() {
-  document.getElementById('newStudentClass').innerHTML = '<option value="">Select Class</option>' + 
-    classes.map(c => `<option value="${c}">${c}</option>`).join('');
-}
-
-function addStudent() {
-  const cls = document.getElementById('newStudentClass').value;
-  const name = document.getElementById('newStudentName').value.trim();
-  const pass = document.getElementById('newStudentPasscode').value.trim();
-  
-  if(!cls || !name || !pass) {
-    alert('Fill all fields');
-    return;
-  }
-  if(pass.length !== 4 || isNaN(pass)) {
-    alert('Passcode must be 4 digits');
-    return;
-  }
-  if(db.students.find(s => s.username === name)) {
-    alert('Student already exists');
-    return;
-  }
-  
-  db.students.push({username: name, passcode: pass, class: cls});
-  document.getElementById('newStudentName').value = '';
-  document.getElementById('newStudentPasscode').value = '';
-  alert('Student added successfully!');
-}
-
-function addSubject() {
-  const subj = document.getElementById('newSubject').value.trim();
-  if(!subj) {
-    alert('Enter a subject name');
-    return;
-  }
-  if(subjects.includes(subj)) {
-    alert('Subject already exists');
-    return;
-  }
-  
-  subjects.push(subj);
-  document.getElementById('newSubject').value = '';
-  alert('Subject added! It will show in the assignment dropdown now.');
-  loadTeacherAssignments();
 }
 
 function logout() {
-  currentUser = null;
-  document.getElementById('loginSection').classList.remove('hidden');
-  document.getElementById('dashboard').classList.add('hidden');
-  document.getElementById('adminPanel').classList.add('hidden');
-  document.getElementById('studentPanel').classList.add('hidden');
+  document.getElementById("portal").classList.add("hidden");
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.getElementById("studentPanel").classList.add("hidden");
+  document.getElementById("role").value = "";
+  document.getElementById("adminUser").value = "";
+  document.getElementById("adminPass").value = "";
+  document.getElementById("studentPass").value = "";
 }
 
-function loadResults() {
-  const list = document.getElementById('results');
-  if(currentUser.role==='Student') {
-    const userResults = db.results.filter(r => r.username===currentUser.username);
-    list.innerHTML = userResults.length?
-      `<table><tr><th>Subject</th><th>Score</th></tr>${userResults.map(r =>
-        `<tr><td>${r.subject}</td><td>${r.score}</td></tr>`
-      ).join('')}</table>` : "No results yet.";
+document.getElementById("role").addEventListener("change", function() {
+  document.getElementById("adminLogin").classList.add("hidden");
+  document.getElementById("studentLogin").classList.add("hidden");
+  if (this.value === "admin") document.getElementById("adminLogin").classList.remove("hidden");
+  if (this.value === "student") document.getElementById("studentLogin").classList.remove("hidden");
+});
+
+document.getElementById("studentClass").addEventListener("change", function() {
+  const cls = this.value;
+  const nameSelect = document.getElementById("studentName");
+  nameSelect.innerHTML = '<option value="">Select Student</option>';
+  if (students[cls]) {
+    students[cls].forEach(s => {
+      nameSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+    });
   }
+});
+
+function addStudent() {
+  const name = document.getElementById("newStudentName").value.trim();
+  const pass = document.getElementById("newStudentPass").value.trim();
+  if (!name ||!pass || pass.length!== 4) {
+    alert("Enter valid name and 4-digit passcode");
+    return;
+  }
+  students["Basic Six"].push({name, pass});
+  alert(`${name} added successfully!`);
+  document.getElementById("newStudentName").value = "";
+  document.getElementById("newStudentPass").value = "";
 }
 
-function loadStories() {
-  const cat = document.getElementById('storyCategory').value;
-  const list = document.getElementById('storiesList');
-  if(!cat) { list.innerHTML = ""; return; }
-  const catStories = stories[cat] || [];
-  list.innerHTML = catStories.length? catStories.map(s =>
-    `<div class="story-card"><h3>${s.title}</h3><p>${s.content}</p></div>`
-  ).join('') : "<p>No stories available for this subject yet.</p>";
+function addSubject() {
+  const subj = document.getElementById("newSubject").value.trim();
+  if (!subj) return alert("Enter subject name");
+  subjects.push(subj);
+  updateSubjectDropdowns();
+  alert(`${subj} added!`);
+  document.getElementById("newSubject").value = "";
 }
 
-function loadTeacherAssignments() {
-  const section = document.getElementById('assignmentSection');
-  section.innerHTML = `
-    <h3>Post Assignment</h3>
-    <select id="assignClass">
-      <option value="">Select Class</option>
-      ${classes.map(c => `<option value="${c}">${c}</option>`).join('')}
-    </select>
-    <select id="assignSubject">
-      <option value="">Select Subject</option>
-      ${subjects.map(s => `<option value="${s}">${s}</option>`).join('')}
-    </select>
-    <textarea id="assignQuestion" placeholder="Write the assignment question here"></textarea>
-    <button onclick="postAssignment()">Post Assignment</button>
-    
-    <h3>View Submissions</h3>
-    <select id="viewAssignSelect" onchange="showSubmissions()">
-      <option value="">Select Assignment</option>
-      ${db.assignments.map(a => `<option value="${a.id}">${a.subject} - ${a.class} - ${a.date}</option>`).join('')}
-    </select>
-    <div id="submissionsArea"></div>
-  `;
-  showTeacherAssignments();
+function updateSubjectDropdowns() {
+  const assignSel = document.getElementById("assignSubject");
+  assignSel.innerHTML = "";
+  subjects.forEach(s => {
+    assignSel.innerHTML += `<option value="${s}">${s}</option>`;
+  });
+}
+
+function viewStudents() {
+  const listDiv = document.getElementById("studentList");
+  listDiv.classList.remove("hidden");
+  let html = "<strong>Basic Six Students:</strong><br><br>";
+  students["Basic Six"].forEach(s => {
+    html += `<span style="color:#1976d2;">${s.name}</span> - Code: <strong>${s.pass}</strong><br>`;
+  });
+  listDiv.innerHTML = html;
 }
 
 function postAssignment() {
-  const cls = document.getElementById('assignClass').value;
-  const subject = document.getElementById('assignSubject').value;
-  const question = document.getElementById('assignQuestion').value;
-  
-  if(!cls || !subject || !question) {
-    alert('Fill all fields');
-    return;
-  }
-  
-  db.assignments.push({
-    id: Date.now(),
-    class: cls,
-    subject: subject,
-    question: question,
-    date: new Date().toLocaleDateString()
-  });
-  
-  document.getElementById('assignQuestion').value = '';
-  alert('Assignment posted!');
-  loadTeacherAssignments();
+  const subj = document.getElementById("assignSubject").value;
+  const text = document.getElementById("assignmentText").value.trim();
+  if (!text) return alert("Enter assignment text");
+  assignments.push(`${subj}: ${text}`);
+  alert("Assignment posted!");
+  document.getElementById("assignmentText").value = "";
+  loadAssignments();
 }
 
-function showTeacherAssignments() {
-  if(!document.getElementById('teacherAssignments')) {
-    document.getElementById('assignmentSection').insertAdjacentHTML('beforeend', '<div id="teacherAssignments"></div>');
-  }
-  const target = document.getElementById('teacherAssignments');
-  if(db.assignments.length === 0) {
-    target.innerHTML = '<p>No assignments posted yet.</p>';
-    return;
-  }
-  target.innerHTML = db.assignments.map(a => `
-    <div class="assignment-card">
-      <strong>${a.subject} - ${a.class}</strong><br>
-      ${a.question}<br>
-      <small>${a.date}</small>
-    </div>
-  `).join('');
-}
-
-function showSubmissions() {
-  const id = document.getElementById('viewAssignSelect').value;
-  const area = document.getElementById('submissionsArea');
-  
-  if(!id) {
-    area.innerHTML = '';
-    return;
-  }
-  
-  const assignment = db.assignments.find(a => a.id == id);
-  const subs = db.submissions.filter(s => s.assignmentId == id);
-  
-  if(subs.length === 0) {
-    area.innerHTML = '<p>No submissions yet for this assignment.</p>';
-    return;
-  }
-  
-  area.innerHTML = `
-    <h4>${assignment.subject} - ${assignment.class}</h4>
-    <p><strong>Question:</strong> ${assignment.question}</p>
-    <table>
-      <tr><th>Student</th><th>Answer</th><th>Date</th></tr>
-      ${subs.map(s => `<tr><td>${s.username}</td><td>${s.answer}</td><td>${s.date}</td></tr>`).join('')}
-    </table>
-  `;
-}
-
-function loadStudentAssignments() {
-  const section = document.getElementById('assignmentSection');
-  const myAssignments = db.assignments.filter(a => a.class === currentUser.class);
-  
-  section.innerHTML = `
-    <h3>Assignments</h3>
-    <select id="assignmentSelect" onchange="showAssignment()">
-      <option value="">Select Assignment</option>
-      ${myAssignments.map(a => `<option value="${a.id}">${a.subject} - ${a.date}</option>`).join('')}
-    </select>
-    <div id="assignmentAnswerArea"></div>
-  `;
-}
-
-function showAssignment() {
-  const id = document.getElementById('assignmentSelect').value;
-  const area = document.getElementById('assignmentAnswerArea');
-  
-  if(!id) {
-    area.innerHTML = '';
-    return;
-  }
-  
-  const assignment = db.assignments.find(a => a.id == id);
-  const submitted = db.submissions.find(s => s.assignmentId == id && s.username === currentUser.username);
-  
-  if(submitted) {
-    area.innerHTML = `
-      <div class="assignment-card">
-        <strong>${assignment.subject}</strong><br>
-        ${assignment.question}<br><br>
-        <strong>Your Answer:</strong><br>
-        ${submitted.answer}
-      </div>
-    `;
+function loadAssignments() {
+  let html = "";
+  if (assignments.length === 0) {
+    html = "No assignments yet.";
   } else {
-    area.innerHTML = `
-      <div class="assignment-card">
-        <strong>${assignment.subject}</strong><br>
-        ${assignment.question}<br><br>
-        <textarea id="studentAnswer" placeholder="Type your answer here"></textarea>
-        <button onclick="submitAnswer(${id})">Submit Answer</button>
-      </div>
-    `;
+    assignments.forEach(a => {
+      html += `<div class="story">${a}</div>`;
+    });
   }
+  document.getElementById("assignmentList").innerHTML = html;
 }
 
-function submitAnswer(assignmentId) {
-  const answer = document.getElementById('studentAnswer').value;
-  if(!answer) {
-    alert('Type an answer first');
-    return;
+function loadStory() {
+  const subj = document.getElementById("storySubject").value;
+  const content = document.getElementById("storyContent");
+  if (stories[subj]) {
+    content.innerHTML = stories[subj].map(s => `<div class="story">${s}</div>`).join("");
+  } else {
+    content.innerHTML = "";
   }
-  
-  db.submissions.push({
-    assignmentId: assignmentId,
-    username: currentUser.username,
-    class: currentUser.class,
-    answer: answer,
-    date: new Date().toLocaleDateString()
-  });
-  
-  alert('Answer submitted!');
-  showAssignment();
 }
 </script>
 </body>
