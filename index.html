@@ -7,15 +7,16 @@
 <title>School Portal</title>
 <style>
   :root {
-    --primary: #4f46e5;
-    --primary-dark: #4338ca;
-    --danger: #ef4444;
-    --danger-dark: #dc2626;
-    --bg: #f3f4f6;
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --danger: #f43f5e;
+    --danger-dark: #e11d48;
+    --success: #10b981;
+    --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --card: #ffffff;
-    --accent: #e0e7ff;
+    --accent: #c7d2fe;
     --text: #1f2937;
-    --border: #d1d5db;
+    --border: #e5e7eb;
   }
 
   body {
@@ -23,71 +24,87 @@
     background: var(--bg);
     margin: 0;
     padding: 20px;
+    min-height: 100vh;
     color: var(--text);
   }
- .container {
+.container {
     max-width: 900px;
     margin: auto;
     background: var(--card);
     padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   }
-  h1, h2, h3, h4 {
+  h1 {
+    color: var(--primary-dark);
+    text-align: center;
+  }
+  h2, h3, h4 {
     color: var(--text);
   }
   input, select, textarea, button {
     width: 100%;
     padding: 12px;
     margin: 8px 0;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
     box-sizing: border-box;
     font-size: 16px;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
   }
   button {
     background: var(--primary);
     color: white;
     border: none;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     transition: 0.2s;
   }
   button:hover {
     background: var(--primary-dark);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.4);
   }
- .btn-back {
+.btn-back {
     background: #6b7280;
     width: auto;
     padding: 8px 16px;
     margin-bottom: 15px;
   }
- .btn-back:hover {
-    background: #4b5563;
-  }
- .logout {
+.logout {
     background: var(--danger);
   }
- .logout:hover {
+.logout:hover {
     background: var(--danger-dark);
   }
- .hidden {
+.btn-submit {
+    background: var(--success);
+    width: auto;
+    padding: 8px 16px;
+  }
+.hidden {
     display: none;
   }
- .story {
+.assignment,.submission {
     background: var(--accent);
     padding: 15px;
     margin: 10px 0;
-    border-left: 4px solid var(--primary);
-    border-radius: 8px;
+    border-left: 5px solid var(--primary);
+    border-radius: 10px;
   }
- .panel {
+.submission {
+    background: #f0fdf4;
+    border-left-color: var(--success);
+  }
+.panel {
     margin-top: 20px;
     padding-top: 15px;
-    border-top: 1px solid var(--border);
+    border-top: 2px solid var(--border);
   }
- .top-bar {
+.top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -148,6 +165,10 @@
       <textarea id="assignmentText" placeholder="Assignment text"></textarea>
       <button onclick="postAssignment()">Post Assignment</button>
 
+      <h4>View Submissions</h4>
+      <select id="viewAssignmentSelect" onchange="viewSubmissions()"></select>
+      <div id="submissionList"></div>
+
       <h4>Students</h4>
       <button onclick="viewStudents()">View Students</button>
       <div id="studentList" class="hidden"></div>
@@ -191,8 +212,10 @@ let students = {
 };
 
 let subjects = ["Mathematics", "English", "Prevocational Studies", "CCA"];
-let assignments = [];
+let assignments = []; // {id, subject, text}
+let submissions = []; // {assignmentId, studentName, answer, time}
 let stories = {};
+let currentStudent = "";
 
 const adminUser = "admin";
 const adminPass = "admin123";
@@ -214,6 +237,7 @@ function login() {
     const pass = document.getElementById("studentPass").value;
     const student = students[cls]?.find(s => s.name === name && s.pass === pass);
     if (student) {
+      currentStudent = name;
       showPortal("student", name);
     } else {
       alert("Wrong student details or passcode");
@@ -228,6 +252,7 @@ function showPortal(role, name) {
   if (role === "admin") {
     document.getElementById("adminPanel").classList.remove("hidden");
     updateSubjectDropdowns();
+    updateAssignmentDropdown();
   }
   if (role === "student") {
     document.getElementById("studentPanel").classList.remove("hidden");
@@ -244,6 +269,7 @@ function logout() {
   document.getElementById("adminUser").value = "";
   document.getElementById("adminPass").value = "";
   document.getElementById("studentPass").value = "";
+  currentStudent = "";
 }
 
 function goBack() {
@@ -302,12 +328,20 @@ function updateSubjectDropdowns() {
   });
 }
 
+function updateAssignmentDropdown() {
+  const sel = document.getElementById("viewAssignmentSelect");
+  sel.innerHTML = '<option value="">Select Assignment</option>';
+  assignments.forEach(a => {
+    sel.innerHTML += `<option value="${a.id}">${a.subject}: ${a.text.substring(0,30)}...</option>`;
+  });
+}
+
 function viewStudents() {
   const listDiv = document.getElementById("studentList");
   listDiv.classList.remove("hidden");
   let html = "<strong>Basic Six Students:</strong><br><br>";
   students["Basic Six"].forEach(s => {
-    html += `<span style="color:var(--primary);">${s.name}</span> - Code: <strong>${s.pass}</strong><br>`;
+    html += `<span style="color:var(--primary); font-weight:600;">${s.name}</span> - Code: <strong>${s.pass}</strong><br>`;
   });
   listDiv.innerHTML = html;
 }
@@ -316,9 +350,11 @@ function postAssignment() {
   const subj = document.getElementById("assignSubject").value;
   const text = document.getElementById("assignmentText").value.trim();
   if (!text) return alert("Enter assignment text");
-  assignments.push(`${subj}: ${text}`);
+  const id = Date.now();
+  assignments.push({id, subject: subj, text});
   alert("Assignment posted!");
   document.getElementById("assignmentText").value = "";
+  updateAssignmentDropdown();
   loadAssignments();
 }
 
@@ -328,18 +364,66 @@ function loadAssignments() {
     html = "No assignments yet.";
   } else {
     assignments.forEach(a => {
-      html += `<div class="story">${a}</div>`;
+      const hasSubmitted = submissions.some(s => s.assignmentId === a.id && s.studentName === currentStudent);
+      html += `
+        <div class="assignment">
+          <strong>${a.subject}</strong>
+          <p>${a.text}</p>
+          ${hasSubmitted?
+            '<p style="color:var(--success); font-weight:600;">✓ Submitted</p>' :
+            `<textarea id="answer-${a.id}" placeholder="Type your answer here"></textarea>
+             <button class="btn-submit" onclick="submitAnswer(${a.id})">Submit Answer</button>`
+          }
+        </div>
+      `;
     });
   }
   document.getElementById("assignmentList").innerHTML = html;
 }
 
+function submitAnswer(assignmentId) {
+  const answer = document.getElementById(`answer-${assignmentId}`).value.trim();
+  if (!answer) return alert("Write an answer first");
+  submissions.push({
+    assignmentId,
+    studentName: currentStudent,
+    answer,
+    time: new Date().toLocaleString()
+  });
+  alert("Answer submitted!");
+  loadAssignments();
+}
+
+function viewSubmissions() {
+  const assignmentId = document.getElementById("viewAssignmentSelect").value;
+  const div = document.getElementById("submissionList");
+  if (!assignmentId) {
+    div.innerHTML = "";
+    return;
+  }
+  const filtered = submissions.filter(s => s.assignmentId == assignmentId);
+  if (filtered.length === 0) {
+    div.innerHTML = "<p>No submissions yet.</p>";
+    return;
+  }
+  let html = "";
+  filtered.forEach(s => {
+    html += `
+      <div class="submission">
+        <strong>${s.studentName}</strong> - ${s.time}
+        <p>${s.answer}</p>
+      </div>
+    `;
+  });
+  div.innerHTML = html;
+}
+
 function loadStory() {
   const subj = document.getElementById("storySubject").value;
   const content = document.getElementById("storyContent");
-  if (stories[subj] && stories[subj].length > 0) {
-    content.innerHTML = stories[subj].map(s =>
-      `<div class="story"><h3>${s.title}</h3><p>${s.content}</p></div>`
+  if (stories && stories.length > 0) {
+    content.innerHTML = stories.map(s =>
+      `<div class="assignment"><h3>${s.title}</h3><p>${s.content}</p></div>`
     ).join("");
   } else {
     content.innerHTML = "<p>No stories yet for this subject.</p>";
