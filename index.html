@@ -1,91 +1,347 @@
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basic Six Online Assignment</title>
-  <link rel="stylesheet" href="style.css">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <title>Great Scholars Portal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      padding: 20px; 
+      max-width: 900px; 
+      margin: auto; 
+      background: #f5f5f5;
+    }
+    .hidden { display: none; }
+    input, select, button, textarea { 
+      padding: 10px; 
+      margin: 8px 0; 
+      width: 100%; 
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button { 
+      cursor: pointer; 
+      background: #4CAF50; 
+      color: white; 
+      border: none; 
+      font-weight: bold;
+    }
+    button:hover { background: #45a049; }
+    .card { 
+      border: 1px solid #ddd; 
+      padding: 15px; 
+      margin: 10px 0; 
+      border-radius: 5px; 
+      background: white;
+    }
+    h2, h3 { color: #333; margin-top: 20px; }
+    .logout { 
+      background: #f44336; 
+      width: auto; 
+      float: right; 
+      padding: 8px 15px;
+    }
+    .logout:hover { background: #da190b; }
+    .header { overflow: auto; margin-bottom: 20px; }
+    .section { 
+      background: white; 
+      padding: 20px; 
+      border-radius: 8px; 
+      margin: 15px 0; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .note { font-size: 12px; color: #666; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Basic Six Assignment Portal</h1>
-    
-    <form id="assignmentForm">
-      <input type="text" id="title" placeholder="Assignment Title" required>
-      <input type="text" id="subject" placeholder="Subject" required>
-      <input type="date" id="dueDate" required>
-      <textarea id="description" placeholder="Description" required></textarea>
-      <button type="submit">Submit Assignment</button>
-    </form>
 
-    <h2>Submitted Assignments</h2>
-    <div id="assignmentList"></div>
+<!-- LOGIN VIEW -->
+<div id="view-login">
+  <div class="section">
+    <h2>Student Login</h2>
+    <select id="studentSelect">
+      <option value="">Select your name</option>
+    </select>
+    <input type="password" id="studentPass" placeholder="Enter passcode">
+    <button onclick="studentLogin()">Login</button>
   </div>
 
-  <script>
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBhkP8E0ST4DE7-kBOdGXs8frhvSmIKCRI",
-      authDomain: "basic-six-online-assignment.firebaseapp.com",
-      projectId: "basic-six-online-assignment",
-      storageBucket: "basic-six-online-assignment.firebasestorage.app",
-      messagingSenderId: "219827342901",
-      appId: "1:219827342901:web:1906ceed79c320ee2e6b7c"
-    };
+  <div class="section">
+    <h2>Teacher Login</h2>
+    <input type="password" id="teacherPass" placeholder="Teacher passcode">
+    <button onclick="teacherLogin()">Login</button>
+    <p class="note">Default passcode: teacher123 - change it in the code</p>
+  </div>
+</div>
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+<!-- STUDENT DASHBOARD -->
+<div id="view-student" class="hidden">
+  <div class="header">
+    <button class="logout" onclick="logout()">Logout</button>
+    <h2 id="studentWelcome"></h2>
+  </div>
+  
+  <div class="section">
+    <h3>Available Assignments</h3>
+    <div id="assignmentsList"><p>Loading...</p></div>
+  </div>
 
-    // Get form and list elements
-    const form = document.getElementById('assignmentForm');
-    const list = document.getElementById('assignmentList');
+  <div class="section">
+    <h3>Submit Assignment</h3>
+    <select id="assignSelect"></select>
+    <textarea id="submissionText" placeholder="Type your answer here" rows="5"></textarea>
+    <button onclick="submitAssignment()">Submit</button>
+  </div>
 
-    // Submit form - save to Firebase
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const assignment = {
-        title: document.getElementById('title').value,
-        subject: document.getElementById('subject').value,
-        dueDate: document.getElementById('dueDate').value,
-        description: document.getElementById('description').value,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
+  <div class="section">
+    <h3>My Submissions</h3>
+    <div id="mySubmissions"><p>No submissions yet</p></div>
+  </div>
+</div>
 
-      try {
-        await db.collection('assignments').add(assignment);
-        form.reset();
-        alert('Assignment submitted!');
-      } catch (error) {
-        console.error('Error adding document: ', error);
-        alert('Error submitting assignment');
-      }
+<!-- TEACHER DASHBOARD -->
+<div id="view-teacher" class="hidden">
+  <div class="header">
+    <button class="logout" onclick="logout()">Logout</button>
+    <h2>Teacher Dashboard</h2>
+  </div>
+
+  <div class="section">
+    <h3>Post New Assignment</h3>
+    <input type="text" id="assignTitle" placeholder="Assignment title">
+    <textarea id="assignDesc" placeholder="Description" rows="3"></textarea>
+    <button onclick="postAssignment()">Post Assignment</button>
+  </div>
+
+  <div class="section">
+    <h3>Add New Student</h3>
+    <input type="text" id="newStudentName" placeholder="Student full name">
+    <input type="text" id="newStudentPass" placeholder="Set passcode for student">
+    <button onclick="addStudent()">Add Student</button>
+  </div>
+
+  <div class="section">
+    <h3>My Students</h3>
+    <div id="studentList"><p>Loading...</p></div>
+  </div>
+
+  <div class="section">
+    <h3>All Submissions</h3>
+    <div id="allSubmissions"><p>Loading...</p></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// YOUR FIREBASE CONFIG - already added
+const firebaseConfig = {
+  apiKey: "AIzaSyBhkP8E0ST4DE7-kBOdGXs8frhvSmIKCRI",
+  authDomain: "basic-six-online-assignment.firebaseapp.com",
+  projectId: "basic-six-online-assignment",
+  storageBucket: "basic-six-online-assignment.firebasestorage.app",
+  messagingSenderId: "219827342901",
+  appId: "1:219827342901:web:1906ceed79c320ee2e6b7c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ROUTING
+function showView(view) {
+  document.querySelectorAll('[id^="view-"]').forEach(div => div.classList.add('hidden'));
+  document.getElementById(`view-${view}`).classList.remove('hidden');
+}
+
+window.addEventListener('load', () => {
+  loadStudents();
+  checkAuth();
+});
+
+function checkAuth() {
+  const role = localStorage.getItem("role");
+  if (!role) {
+    showView('login');
+    return;
+  }
+  if (role === 'student') {
+    document.getElementById("studentWelcome").textContent = "Welcome, " + localStorage.getItem("studentName");
+    loadStudentData();
+    showView('student');
+  }
+  if (role === 'teacher') {
+    loadTeacherData();
+    showView('teacher');
+  }
+}
+
+// LOGIN FUNCTIONS
+async function loadStudents() {
+  try {
+    const snap = await getDocs(collection(db, "students"));
+    const select = document.getElementById("studentSelect");
+    select.innerHTML = '<option value="">Select your name</option>';
+    snap.forEach(doc => {
+      const opt = document.createElement("option");
+      opt.value = doc.id;
+      opt.textContent = doc.data().name;
+      select.appendChild(opt);
     });
+  } catch (e) {
+    console.log("No students yet");
+  }
+}
 
-    // Load assignments in real-time
-    db.collection('assignments')
-      .orderBy('createdAt', 'desc')
-      .onSnapshot((snapshot) => {
-        list.innerHTML = '';
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const item = document.createElement('div');
-          item.className = 'assignment-item';
-          item.innerHTML = `
-            <h3>${data.title}</h3>
-            <p><strong>Subject:</strong> ${data.subject}</p>
-            <p><strong>Due:</strong> ${data.dueDate}</p>
-            <p>${data.description}</p>
-          `;
-          list.appendChild(item);
-        });
-      });
-  </script>
+window.studentLogin = async function() {
+  const id = document.getElementById("studentSelect").value;
+  const pass = document.getElementById("studentPass").value;
+  if (!id) return alert("Please select a student");
+  
+  const snap = await getDocs(query(collection(db, "students"), where("__name__", "==", id)));
+  if (snap.empty) return alert("Student not found");
+  
+  const data = snap.docs[0].data();
+  if (data.passcode === pass) {
+    localStorage.setItem("role", "student");
+    localStorage.setItem("studentId", id);
+    localStorage.setItem("studentName", data.name);
+    checkAuth();
+  } else {
+    alert("Wrong passcode");
+  }
+}
+
+window.teacherLogin = function() {
+  const pass = document.getElementById("teacherPass").value;
+  if (pass === "teacher123") { // CHANGE THIS
+    localStorage.setItem("role", "teacher");
+    checkAuth();
+  } else {
+    alert("Wrong teacher passcode");
+  }
+}
+
+window.logout = function() {
+  localStorage.clear();
+  showView('login');
+}
+
+// STUDENT FUNCTIONS
+async function loadStudentData() {
+  const assignSnap = await getDocs(collection(db, "assignments"));
+  const assignDiv = document.getElementById("assignmentsList");
+  const assignSelect = document.getElementById("assignSelect");
+  assignDiv.innerHTML = "";
+  assignSelect.innerHTML = "";
+  
+  if (assignSnap.empty) {
+    assignDiv.innerHTML = "<p>No assignments posted yet</p>";
+    return;
+  }
+  
+  assignSnap.forEach(doc => {
+    const data = doc.data();
+    assignDiv.innerHTML += `<div class="card"><strong>${data.title}</strong><p>${data.desc}</p></div>`;
+    assignSelect.innerHTML += `<option value="${doc.id}">${data.title}</option>`;
+  });
+
+  const subSnap = await getDocs(query(
+    collection(db, "submissions"), 
+    where("studentId", "==", localStorage.getItem("studentId")),
+    orderBy("submittedAt", "desc")
+  ));
+  const subDiv = document.getElementById("mySubmissions");
+  subDiv.innerHTML = "";
+  if (subSnap.empty) {
+    subDiv.innerHTML = "<p>No submissions yet</p>";
+  }
+  subSnap.forEach(doc => {
+    subDiv.innerHTML += `<div class="card">${doc.data().text}</div>`;
+  });
+}
+
+window.submitAssignment = async function() {
+  const text = document.getElementById("submissionText").value;
+  const assignId = document.getElementById("assignSelect").value;
+  if (!text) return alert("Please enter your answer");
+  
+  await addDoc(collection(db, "submissions"), {
+    studentId: localStorage.getItem("studentId"),
+    studentName: localStorage.getItem("studentName"),
+    assignmentId: assignId,
+    text: text,
+    submittedAt: new Date()
+  });
+  alert("Submitted successfully!");
+  document.getElementById("submissionText").value = "";
+  loadStudentData();
+}
+
+// TEACHER FUNCTIONS
+async function loadTeacherData() {
+  const studSnap = await getDocs(collection(db, "students"));
+  const studDiv = document.getElementById("studentList");
+  studDiv.innerHTML = "";
+  if (studSnap.empty) {
+    studDiv.innerHTML = "<p>No students added yet</p>";
+  }
+  studSnap.forEach(doc => {
+    studDiv.innerHTML += `<div class="card">${doc.data().name}</div>`;
+  });
+
+  const subSnap = await getDocs(query(collection(db, "submissions"), orderBy("submittedAt", "desc")));
+  const subDiv = document.getElementById("allSubmissions");
+  subDiv.innerHTML = "";
+  if (subSnap.empty) {
+    subDiv.innerHTML = "<p>No submissions yet</p>";
+  }
+  subSnap.forEach(doc => {
+    const d = doc.data();
+    const date = d.submittedAt?.seconds ? new Date(d.submittedAt.seconds * 1000).toLocaleString() : "";
+    subDiv.innerHTML += `<div class="card"><strong>${d.studentName}</strong><p>${d.text}</p><small>${date}</small></div>`;
+  });
+}
+
+window.postAssignment = async function() {
+  const title = document.getElementById("assignTitle").value;
+  const desc = document.getElementById("assignDesc").value;
+  if (!title) return alert("Please enter a title");
+  
+  await addDoc(collection(db, "assignments"), {
+    title: title,
+    desc: desc,
+    postedAt: new Date()
+  });
+  alert("Assignment posted!");
+  document.getElementById("assignTitle").value = "";
+  document.getElementById("assignDesc").value = "";
+  loadTeacherData();
+}
+
+window.addStudent = async function() {
+  const name = document.getElementById("newStudentName").value;
+  const pass = document.getElementById("newStudentPass").value;
+  if (!name || !pass) return alert("Please enter both name and passcode");
+  
+  await addDoc(collection(db, "students"), {
+    name: name,
+    passcode: pass,
+    createdAt: new Date()
+  });
+  alert("Student added!");
+  document.getElementById("newStudentName").value = "";
+  document.getElementById("newStudentPass").value = "";
+  loadTeacherData();
+  loadStudents();
+}
+</script>
 </body>
 </html>
+
+
