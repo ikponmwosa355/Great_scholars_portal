@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,13 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Great Scholars Portal</title>
   <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #45a049;
+      --danger: #f44336;
+      --danger-dark: #da190b;
+      --accent: #2196F3;
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --text: #333;
+      --muted: #666;
+      --online: #4CAF50;
+      --offline: #9e9e9e;
+    }
     * { box-sizing: border-box; }
     body { 
-      font-family: Arial, sans-serif; 
+      font-family: 'Segoe UI', Arial, sans-serif; 
       padding: 20px; 
       max-width: 900px; 
       margin: auto; 
-      background: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
     }
     .hidden { display: none; }
     input, select, button, textarea { 
@@ -21,41 +34,84 @@
       margin: 8px 0; 
       width: 100%; 
       border: 1px solid #ddd;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 14px;
     }
     button { 
       cursor: pointer; 
-      background: #4CAF50; 
+      background: var(--primary); 
       color: white; 
       border: none; 
       font-weight: bold;
+      border-radius: 6px;
+      transition: 0.2s;
     }
-    button:hover { background: #45a049; }
+    button:hover { background: var(--primary-dark); }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: var(--danger-dark); }
+    .btn-accent { background: var(--accent); }
+    .btn-secondary { background: #6c757d; }
+    .btn-secondary:hover { background: #5a6268; }
     .card { 
-      border: 1px solid #ddd; 
+      border: 1px solid #e0e0e0; 
       padding: 15px; 
       margin: 10px 0; 
-      border-radius: 5px; 
-      background: white;
-    }
-    h2, h3 { color: #333; margin-top: 20px; }
-    .logout { 
-      background: #f44336; 
-      width: auto; 
-      float: right; 
-      padding: 8px 15px;
-    }
-    .logout:hover { background: #da190b; }
-    .header { overflow: auto; margin-bottom: 20px; }
-    .section { 
-      background: white; 
-      padding: 20px; 
       border-radius: 8px; 
-      margin: 15px 0; 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background: var(--card);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    .note { font-size: 12px; color: #666; }
+    h2, h3 { color: var(--text); margin-top: 20px; }
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      margin-bottom: 20px; 
+    }
+    .section { 
+      background: var(--card); 
+      padding: 20px; 
+      border-radius: 10px; 
+      margin: 15px 0; 
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    }
+    .note { font-size: 12px; color: var(--muted); }
+    .back-btn { 
+      background: none; 
+      border: none; 
+      color: var(--accent); 
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+      width: auto;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .status-online { background: var(--online); }
+    .status-offline { background: var(--offline); }
+    .msg-box {
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 6px;
+    }
+    .msg {
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 15px;
+      max-width: 75%;
+    }
+    .msg.teacher { background: #e3f2fd; align-self: flex-end; margin-left: auto; }
+    .msg.student { background: #e8f5e9; }
+    .msg-row { display: flex; flex-direction: column; }
+    .row { display: flex; gap: 10px; align-items: center; }
+    .row select, .row input { flex: 1; }
+    .row button { width: auto; padding: 10px 15px; }
   </style>
 </head>
 <body>
@@ -82,7 +138,7 @@
 <!-- STUDENT DASHBOARD -->
 <div id="view-student" class="hidden">
   <div class="header">
-    <button class="logout" onclick="logout()">Logout</button>
+    <button class="back-btn" onclick="logout()">← Logout</button>
     <h2 id="studentWelcome"></h2>
   </div>
   
@@ -102,12 +158,21 @@
     <h3>My Submissions</h3>
     <div id="mySubmissions"><p>No submissions yet</p></div>
   </div>
+
+  <div class="section">
+    <h3>Message Teacher</h3>
+    <div id="studentMsgBox" class="msg-box"></div>
+    <div class="row">
+      <input type="text" id="studentMsgInput" placeholder="Type message...">
+      <button class="btn-accent" onclick="sendMessage('student')">Send</button>
+    </div>
+  </div>
 </div>
 
 <!-- TEACHER DASHBOARD -->
 <div id="view-teacher" class="hidden">
   <div class="header">
-    <button class="logout" onclick="logout()">Logout</button>
+    <button class="back-btn" onclick="logout()">← Logout</button>
     <h2>Teacher Dashboard</h2>
   </div>
 
@@ -126,7 +191,7 @@
   </div>
 
   <div class="section">
-    <h3>My Students</h3>
+    <h3>Manage Students</h3>
     <div id="studentList"><p>Loading...</p></div>
   </div>
 
@@ -134,13 +199,22 @@
     <h3>All Submissions</h3>
     <div id="allSubmissions"><p>Loading...</p></div>
   </div>
+
+  <div class="section">
+    <h3>Message Students</h3>
+    <select id="msgStudentSelect"><option value="">Select student</option></select>
+    <div id="teacherMsgBox" class="msg-box"></div>
+    <div class="row">
+      <input type="text" id="teacherMsgInput" placeholder="Type message...">
+      <button class="btn-accent" onclick="sendMessage('teacher')">Send</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// YOUR FIREBASE CONFIG - already added
 const firebaseConfig = {
   apiKey: "AIzaSyBhkP8E0ST4DE7-kBOdGXs8frhvSmIKCRI",
   authDomain: "basic-six-online-assignment.firebaseapp.com",
@@ -153,7 +227,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ROUTING
+let unsubscribeMessages = null;
+
 function showView(view) {
   document.querySelectorAll('[id^="view-"]').forEach(div => div.classList.add('hidden'));
   document.getElementById(`view-${view}`).classList.remove('hidden');
@@ -162,7 +237,18 @@ function showView(view) {
 window.addEventListener('load', () => {
   loadStudents();
   checkAuth();
+  setOnlineStatus(true);
 });
+
+window.addEventListener('beforeunload', () => {
+  setOnlineStatus(false);
+});
+
+function setOnlineStatus(isOnline) {
+  const id = localStorage.getItem("studentId");
+  if (!id) return;
+  updateDoc(doc(db, "students", id), { online: isOnline, lastSeen: serverTimestamp() }).catch(()=>{});
+}
 
 function checkAuth() {
   const role = localStorage.getItem("role");
@@ -173,6 +259,8 @@ function checkAuth() {
   if (role === 'student') {
     document.getElementById("studentWelcome").textContent = "Welcome, " + localStorage.getItem("studentName");
     loadStudentData();
+    loadMessages('student');
+    setOnlineStatus(true);
     showView('student');
   }
   if (role === 'teacher') {
@@ -181,21 +269,20 @@ function checkAuth() {
   }
 }
 
-// LOGIN FUNCTIONS
 async function loadStudents() {
-  try {
-    const snap = await getDocs(collection(db, "students"));
-    const select = document.getElementById("studentSelect");
-    select.innerHTML = '<option value="">Select your name</option>';
-    snap.forEach(doc => {
-      const opt = document.createElement("option");
-      opt.value = doc.id;
-      opt.textContent = doc.data().name;
-      select.appendChild(opt);
-    });
-  } catch (e) {
-    console.log("No students yet");
-  }
+  const snap = await getDocs(collection(db, "students"));
+  const select = document.getElementById("studentSelect");
+  const msgSelect = document.getElementById("msgStudentSelect");
+  select.innerHTML = '<option value="">Select your name</option>';
+  if (msgSelect) msgSelect.innerHTML = '<option value="">Select student</option>';
+  snap.forEach(doc => {
+    const data = doc.data();
+    const opt = document.createElement("option");
+    opt.value = doc.id;
+    opt.textContent = data.name;
+    select.appendChild(opt);
+    if (msgSelect) msgSelect.appendChild(opt.cloneNode(true));
+  });
 }
 
 window.studentLogin = async function() {
@@ -219,7 +306,7 @@ window.studentLogin = async function() {
 
 window.teacherLogin = function() {
   const pass = document.getElementById("teacherPass").value;
-  if (pass === "teacher123") { // CHANGE THIS
+  if (pass === "teacher123") {
     localStorage.setItem("role", "teacher");
     checkAuth();
   } else {
@@ -228,11 +315,12 @@ window.teacherLogin = function() {
 }
 
 window.logout = function() {
+  setOnlineStatus(false);
   localStorage.clear();
+  if (unsubscribeMessages) unsubscribeMessages();
   showView('login');
 }
 
-// STUDENT FUNCTIONS
 async function loadStudentData() {
   const assignSnap = await getDocs(collection(db, "assignments"));
   const assignDiv = document.getElementById("assignmentsList");
@@ -258,9 +346,7 @@ async function loadStudentData() {
   ));
   const subDiv = document.getElementById("mySubmissions");
   subDiv.innerHTML = "";
-  if (subSnap.empty) {
-    subDiv.innerHTML = "<p>No submissions yet</p>";
-  }
+  if (subSnap.empty) subDiv.innerHTML = "<p>No submissions yet</p>";
   subSnap.forEach(doc => {
     subDiv.innerHTML += `<div class="card">${doc.data().text}</div>`;
   });
@@ -276,14 +362,13 @@ window.submitAssignment = async function() {
     studentName: localStorage.getItem("studentName"),
     assignmentId: assignId,
     text: text,
-    submittedAt: new Date()
+    submittedAt: serverTimestamp()
   });
   alert("Submitted successfully!");
   document.getElementById("submissionText").value = "";
   loadStudentData();
 }
 
-// TEACHER FUNCTIONS
 async function loadTeacherData() {
   const studSnap = await getDocs(collection(db, "students"));
   const studDiv = document.getElementById("studentList");
@@ -292,20 +377,51 @@ async function loadTeacherData() {
     studDiv.innerHTML = "<p>No students added yet</p>";
   }
   studSnap.forEach(doc => {
-    studDiv.innerHTML += `<div class="card">${doc.data().name}</div>`;
+    const d = doc.data();
+    const status = d.online ? '<span class="status-dot status-online"></span>Online' : '<span class="status-dot status-offline"></span>Offline';
+    studDiv.innerHTML += `
+      <div class="card">
+        <div class="row">
+          <div style="flex:1">
+            <strong>${d.name}</strong><br>
+            <small>${status}</small>
+          </div>
+          <select onchange="manageStudent('${doc.id}', this.value)">
+            <option value="">Actions</option>
+            <option value="edit">Edit Name</option>
+            <option value="delete">Delete</option>
+          </select>
+        </div>
+      </div>`;
   });
 
   const subSnap = await getDocs(query(collection(db, "submissions"), orderBy("submittedAt", "desc")));
   const subDiv = document.getElementById("allSubmissions");
   subDiv.innerHTML = "";
-  if (subSnap.empty) {
-    subDiv.innerHTML = "<p>No submissions yet</p>";
-  }
+  if (subSnap.empty) subDiv.innerHTML = "<p>No submissions yet</p>";
   subSnap.forEach(doc => {
     const d = doc.data();
     const date = d.submittedAt?.seconds ? new Date(d.submittedAt.seconds * 1000).toLocaleString() : "";
     subDiv.innerHTML += `<div class="card"><strong>${d.studentName}</strong><p>${d.text}</p><small>${date}</small></div>`;
   });
+}
+
+window.manageStudent = async function(id, action) {
+  if (action === "delete") {
+    if (confirm("Delete this student?")) {
+      await deleteDoc(doc(db, "students", id));
+      loadTeacherData();
+      loadStudents();
+    }
+  }
+  if (action === "edit") {
+    const newName = prompt("Enter new name:");
+    if (newName) {
+      await updateDoc(doc(db, "students", id), { name: newName });
+      loadTeacherData();
+      loadStudents();
+    }
+  }
 }
 
 window.postAssignment = async function() {
@@ -316,7 +432,7 @@ window.postAssignment = async function() {
   await addDoc(collection(db, "assignments"), {
     title: title,
     desc: desc,
-    postedAt: new Date()
+    postedAt: serverTimestamp()
   });
   alert("Assignment posted!");
   document.getElementById("assignTitle").value = "";
@@ -332,7 +448,8 @@ window.addStudent = async function() {
   await addDoc(collection(db, "students"), {
     name: name,
     passcode: pass,
-    createdAt: new Date()
+    online: false,
+    createdAt: serverTimestamp()
   });
   alert("Student added!");
   document.getElementById("newStudentName").value = "";
@@ -340,8 +457,59 @@ window.addStudent = async function() {
   loadTeacherData();
   loadStudents();
 }
+
+window.sendMessage = async function(sender) {
+  const inputId = sender === 'teacher' ? 'teacherMsgInput' : 'studentMsgInput';
+  const text = document.getElementById(inputId).value;
+  if (!text) return;
+  
+  let toId = null;
+  if (sender === 'teacher') {
+    toId = document.getElementById('msgStudentSelect').value;
+    if (!toId) return alert("Select a student");
+  } else {
+    toId = 'teacher';
+  }
+  
+  await addDoc(collection(db, "messages"), {
+    from: sender,
+    fromName: localStorage.getItem("studentName") || "Teacher",
+    to: toId,
+    text: text,
+    sentAt: serverTimestamp()
+  });
+  document.getElementById(inputId).value = "";
+}
+
+function loadMessages(role) {
+  if (unsubscribeMessages) unsubscribeMessages();
+  
+  const boxId = role === 'teacher' ? 'teacherMsgBox' : 'studentMsgBox';
+  const userId = role === 'teacher' ? document.getElementById('msgStudentSelect').value : localStorage.getItem("studentId");
+  
+  if (!userId) return;
+  
+  const q = query(collection(db, "messages"), orderBy("sentAt", "asc"));
+  
+  unsubscribeMessages = onSnapshot(q, (snap) => {
+    const box = document.getElementById(boxId);
+    box.innerHTML = "";
+    snap.forEach(doc => {
+      const d = doc.data();
+      if ((role === 'teacher' && d.to === userId) || (role === 'student' && d.to === 'teacher')) {
+        const cls = d.from === 'teacher' ? 'teacher' : 'student';
+        box.innerHTML += `<div class="msg-row"><div class="msg ${cls}"><strong>${d.fromName}:</strong> ${d.text}</div></div>`;
+      }
+    });
+    box.scrollTop = box.scrollHeight;
+  });
+}
+
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'msgStudentSelect') {
+    loadMessages('teacher');
+  }
+});
 </script>
 </body>
 </html>
-
-
