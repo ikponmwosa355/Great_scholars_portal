@@ -1,747 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Great Scholars Portal</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      width: 100%;
-      max-width: 1000px;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-    }
-    .login-box {
-      max-width: 450px;
-      max-height: none;
-      overflow-y: visible;
-      margin: 50px auto;
-      text-align: center;
-    }
-    .logo {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      margin: 0 auto 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: bold;
-      color: white;
-    }
-    .logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 12px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .header-logo {
-      width: 45px;
-      height: 45px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: bold;
-      color: white;
-      flex-shrink: 0;
-    }
-    .header-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-    .header-actions { display: flex; gap: 10px; }
-    h1 { color: #333; margin-bottom: 5px; font-size: 26px; }
-    h2 { color: #333; margin: 15px 0 10px; font-size: 22px; }
-    h3 { color: #333; margin: 20px 0 10px; font-size: 18px; }
-    p { color: #666; margin-bottom: 15px; font-size: 15px; line-height: 1.6; text-align: left; }
-    select, input, textarea {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 15px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    select:focus, input:focus, textarea:focus {
-      outline: none;
-      border-color: #667eea;
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #667eea;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover { background: #5568d3; }
-    .btn-small { width: auto; padding: 8px 16px; font-size: 14px; margin-right: 8px; }
-    .btn-danger { background: #e74c3c; }
-    .btn-danger:hover { background: #c0392b; }
-    .btn-success { background: #27ae60; }
-    .btn-success:hover { background: #229954; }
-    .btn-ghost {
-      background: transparent;
-      border: 2px solid #667eea;
-      color: #667eea;
-    }
-    .btn-ghost:hover {
-      background: #667eea;
-      color: white;
-    }
-    .btn-top {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: auto;
-      padding: 12px 20px;
-      background: #333;
-      color: white;
-      border-radius: 50px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      display: none;
-      z-index: 100;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .btn-top.show { display: block; opacity: 1; }
-    .error {
-      color: #e74c3c;
-      margin-top: 15px;
-      font-size: 14px;
-      display: none;
-      text-align: center;
-    }
-    .hidden { display: none; }
-    .student-badge,.subject-badge {
-      display: inline-block;
-      background: #667eea;
-      color: white;
-      padding: 8px 12px;
-      margin: 5px;
-      border-radius: 20px;
-      font-size: 14px;
-    }
-    .student-badge span,.subject-badge span {
-      margin-left: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .quiz-card,.assignment,.call-request,.story-card {
-      border: 1px solid #ddd;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
-    }
-    .story-content {
-      background: #f9f9f9;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 15px;
-    }
-    .assignment.overdue {
-      border-left: 4px solid #e74c3c;
-    }
-    .assignment.submitted {
-      border-left: 4px solid #27ae60;
-    }
-    .call-request.pending {
-      border-left: 4px solid #f39c12;
-    }
-    .call-request.completed {
-      border-left: 4px solid #27ae60;
-    }
-    .form-bottom {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 2px solid #f0f0f0;
-    }
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #e0e0e0;
-      overflow-x: auto;
-    }
-    .tab {
-      padding: 12px 20px;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      font-weight: 600;
-      color: #666;
-      white-space: nowrap;
-    }
-    .tab.active {
-      color: #667eea;
-      border-bottom-color: #667eea;
-    }
-    .tab-content {
-      min-height: 200px;
-      max-height: 60vh;
-      overflow-y: auto;
-      padding-right: 5px;
-    }
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    @media (max-width: 768px) {
-      body { padding: 10px; }
-      .container { padding: 20px; max-height: 95vh; }
-      .grid-2 { grid-template-columns: 1fr; }
-      .btn-top { bottom: 20px; right: 20px; padding: 10px 16px; font-size: 14px; }
-      .header-actions { width: 100%; justify-content: flex-end; }
-      .header { flex-direction: column; align-items: flex-start; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Great Scholars Portal</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+  body { background:linear-gradient(135deg,#6a11cb,#2575fc); min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; }
+.container { background:#fff; border-radius:15px; padding:30px; width:100%; max-width:500px; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+  h1 { text-align:center; color:#333; margin-bottom:20px; }
+.logo { display:block; margin:0 auto 20px; width:80px; height:80px; border-radius:50%; background:#ddd; object-fit:cover; }
+  input, select, button, textarea { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:8px; font-size:16px; }
+  button { background:#2575fc; color:#fff; border:none; cursor:pointer; font-weight:bold; }
+  button:hover { background:#1a5edb; }
+.btn-red { background:#ff4d4d; }
+.btn-red:hover { background:#e63939; }
+.btn-gray { background:#6c757d; }
+.btn-gray:hover { background:#5a6268; }
+.hidden { display:none; }
+.tab-nav { display:flex; border-bottom:2px solid #eee; margin:15px 0; }
+.tab-nav div { flex:1; text-align:center; padding:10px; cursor:pointer; color:#666; }
+.tab-nav div.active { color:#2575fc; border-bottom:2px solid #2575fc; font-weight:bold; }
+.story-card { background:#f8f9fa; padding:15px; margin:10px 0; border-radius:8px; border-left:4px solid #2575fc; }
+.story-card h3 { color:#333; margin-bottom:8px; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+  th { background:#f2f2f2; }
+.header-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+.header-bar h2 { margin:0; font-size:20px; }
+.header-bar button { width:auto; padding:8px 15px; margin:0 5px; }
+</style>
 </head>
 <body>
-  <div id="loginPage" class="container login-box">
-    <div class="logo">
-      <img src="your-logo.png" alt="Logo">
-    </div>
+<div class="container">
+
+  <div id="authPage">
+    <img src="logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/80'">
     <h1>Great Scholars Portal</h1>
-    <p>Select your role to continue</p>
-    <div>
-      <select id="role" onchange="showLogin()">
-        <option value="">Select Role</option>
-        <option value="teacher">Teacher</option>
-        <option value="student">Student</option>
-      </select>
-    </div>
-    <div id="teacherLogin" class="hidden">
-      <input type="password" id="teacherPass" placeholder="Enter teacher passcode">
-      <button onclick="loginTeacher()">Login</button>
-    </div>
-    <div id="studentLogin" class="hidden">
-      <select id="studentSelect">
-        <option value="">Select Your Name</option>
-      </select>
-      <input type="password" id="studentPass" placeholder="Enter your passcode">
-      <button onclick="loginStudent()">Login</button>
-    </div>
-    <div class="error" id="errorMsg">Invalid code. Try again.</div>
-  </div>
-
-  <div id="dashboardPage" class="container hidden">
-    <button id="backToTopBtn" class="btn-top" onclick="scrollToTop()">↑ Back to Top</button>
-
-    <div class="header">
-      <div class="header-left">
-        <div class="header-logo">
-          <img src="your-logo.png" alt="Logo">
-        </div>
-        <h1 id="welcomeText">Dashboard</h1>
-      </div>
-      <div class="header-actions">
-        <button id="backBtn" class="btn-small btn-ghost hidden" onclick="goBack()">← Back</button>
-        <button class="btn-small btn-danger" onclick="logout()">Logout</button>
-      </div>
-    </div>
-
-    <div id="teacherPanel" class="hidden">
-      <div id="teacherHome" class="tabs">
-        <div class="tab active" onclick="switchTab('students')">Students</div>
-        <div class="tab" onclick="switchTab('subjects')">Subjects</div>
-        <div class="tab" onclick="switchTab('quizzes')">Quizzes</div>
-        <div class="tab" onclick="switchTab('assignments')">Assignments</div>
-        <div class="tab" onclick="switchTab('results')">Results</div>
-        <div class="tab" onclick="switchTab('callLog')">Call Log</div>
-      </div>
-
-      <div id="tab-students" class="tab-content">
-        <h3>Students List</h3>
-        <div id="studentList"></div>
-        <div class="form-bottom">
-          <h3>Add New Student</h3>
-          <div class="grid-2">
-            <input type="text" id="newStudent" placeholder="Student name">
-            <input type="text" id="newPasscode" placeholder="Passcode (4 digits)">
-          </div>
-          <button class="btn-success" onclick="addStudent()">Add Student</button>
-        </div>
-      </div>
-
-      <div id="tab-subjects" class="tab-content hidden">
-        <h3>Current Subjects</h3>
-        <div id="subjectList"></div>
-        <div class="form-bottom">
-          <h3>Add New Subject</h3>
-          <input type="text" id="newSubject" placeholder="Add new subject">
-          <button class="btn-success" onclick="addSubject()">Add Subject</button>
-        </div>
-      </div>
-
-      <div id="tab-quizzes" class="tab-content hidden">
-        <h3>All Quizzes</h3>
-        <div id="allQuizzes"></div>
-        <div class="form-bottom">
-          <h3>Create Quiz</h3>
-          <select id="quizSubject">
-            <option value="">Select Subject</option>
-          </select>
-          <input type="text" id="quizTitle" placeholder="Quiz Title">
-          <div id="questionsContainer"></div>
-          <button class="btn-small" onclick="addQuestion()">+ Add Question</button>
-          <button onclick="saveQuiz()">Save Quiz</button>
-        </div>
-      </div>
-
-      <div id="tab-assignments" class="tab-content hidden">
-        <h3>All Assignments</h3>
-        <div id="allAssignments"></div>
-        <div class="form-bottom">
-          <h3>Post New Assignment</h3>
-          <select id="assignmentSubject">
-            <option value="">Select Subject</option>
-          </select>
-          <input type="text" id="assignmentTitle" placeholder="Assignment Title">
-          <textarea id="assignmentDesc" rows="4" placeholder="Instructions for students"></textarea>
-          <input type="date" id="assignmentDue">
-          <button onclick="saveAssignment()">Post Assignment</button>
-        </div>
-      </div>
-
-      <div id="tab-results" class="tab-content hidden">
-        <h3>Results</h3>
-        <div id="resultsList"></div>
-      </div>
-
-      <div id="tab-callLog" class="tab-content hidden">
-        <h3>Call Requests</h3>
-        <div id="callRequests"></div>
-      </div>
-    </div>
-
-    <div id="studentPanel" class="hidden">
-      <div id="studentHome" class="tabs">
-        <div class="tab active" onclick="switchTab('myQuizzes')">Take Quiz</div>
-        <div class="tab" onclick="switchTab('myAssignments')">Assignments</div>
-        <div class="tab" onclick="switchTab('myResults')">My Results</div>
-        <div class="tab" onclick="switchTab('stories')">Stories</div>
-        <div class="tab" onclick="switchTab('myCallLog')">Request Call</div>
-      </div>
-
-      <div id="tab-myQuizzes" class="tab-content">
-        <div id="quizArea">
-          <p>Select a subject and quiz below to start</p>
-        </div>
-        <div class="form-bottom">
-          <h3>Select Quiz</h3>
-          <select id="studentSubjectSelect" onchange="loadStudentQuizzes()">
-            <option value="">Choose a subject</option>
-          </select>
-          <div id="quizSelectDiv" class="hidden">
-            <select id="studentQuizSelect" onchange="loadQuiz()">
-              <option value="">Choose a quiz</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div id="tab-myAssignments" class="tab-content hidden">
-        <div id="assignmentArea">
-          <p>Select an assignment to view and submit</p>
-        </div>
-        <div class="form-bottom">
-          <h3>Select Assignment</h3>
-          <select id="studentAssignmentSubject" onchange="loadStudentAssignments()">
-            <option value="">Choose a subject</option>
-          </select>
-          <div id="assignmentSelectDiv" class="hidden">
-            <select id="studentAssignmentSelect" onchange="loadAssignment()">
-              <option value="">Choose an assignment</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div id="tab-myResults" class="tab-content hidden">
-        <h3>Your Scores</h3>
-        <div id="studentResults"></div>
-      </div>
-
-      <div id="tab-stories" class="tab-content hidden">
-        <h3>Read Stories</h3>
-        <select id="storyType" onchange="loadStories()">
-          <option value="">Select Story Type</option>
-          <option value="novel">Novel</option>
-          <option value="short">Short Story</option>
-          <option value="folktale">Folktale</option>
-          <option value="nigerian_history">Nigerian History</option>
+    <div id="authForms">
+      <div id="loginForm">
+        <h3>Login</h3>
+        <select id="loginRole">
+          <option value="">Select Role</option>
+          <option value="Student">Student</option>
+          <option value="Teacher">Teacher</option>
+          <option value="Admin">Admin</option>
         </select>
-        <div id="storyList"></div>
-        <div id="storyReader" class="hidden">
-          <button class="btn-small btn-ghost" onclick="closeStory()">← Back to List</button>
-          <div id="storyContent"></div>
-        </div>
+        <select id="loginClass" class="hidden">
+          <option value="">Select Class</option>
+          <option value="JSS1">JSS1</option>
+          <option value="JSS2">JSS2</option>
+          <option value="JSS3">JSS3</option>
+          <option value="SSS1">SSS1</option>
+          <option value="SSS2">SSS2</option>
+          <option value="SSS3">SSS3</option>
+        </select>
+        <input type="text" id="loginUsername" placeholder="Username">
+        <input type="password" id="loginPassword" class="hidden" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p style="text-align:center; margin-top:10px;">No account? <a href="#" onclick="showRegister()">Register</a></p>
       </div>
 
-      <div id="tab-myCallLog" class="tab-content hidden">
-        <h3>Request a Call with Teacher</h3>
-        <select id="callSubject">
-          <option value="">Select Subject</option>
+      <div id="registerForm" class="hidden">
+        <h3>Register</h3>
+        <select id="regRole">
+          <option value="">Select Role</option>
+          <option value="Student">Student</option>
+          <option value="Teacher">Teacher</option>
         </select>
-        <input type="text" id="callReason" placeholder="Reason for call">
-        <input type="text" id="callPhone" placeholder="Your phone number">
-        <button onclick="requestCall()">Send Call Request</button>
-        <h3 style="margin-top:30px;">Your Call History</h3>
-        <div id="myCallHistory"></div>
+        <select id="regClass" class="hidden">
+          <option value="">Select Class</option>
+          <option value="JSS1">JSS1</option>
+          <option value="JSS2">JSS2</option>
+          <option value="JSS3">JSS3</option>
+          <option value="SSS1">SSS1</option>
+          <option value="SSS2">SSS2</option>
+          <option value="SSS3">SSS3</option>
+        </select>
+        <input type="text" id="regUsername" placeholder="Username">
+        <input type="password" id="regPassword" class="hidden" placeholder="Create Password">
+        <button onclick="register()">Register</button>
+        <p style="text-align:center; margin-top:10px;">Have account? <a href="#" onclick="showLogin()">Login</a></p>
       </div>
     </div>
   </div>
 
-  <script>
-    const TEACHER_PASS = "1234";
-    const TEACHER_PHONE = "+2348000000";
-    let students = JSON.parse(localStorage.getItem('students')) || [
-      {name: "Asikhia diamond", passcode: "1001"},
-      {name: "Ogedengbe success", passcode: "1002"},
-      {name: "Ifada Sonia", passcode: "1003"},
-      {name: "Mbah favour", passcode: "1004"},
-      {name: "Omosigho trinity", passcode: "1005"},
-      {name: "Odion praise", passcode: "1006"},
-      {name: "Igbinoba Osasenaga", passcode: "1007"},
-      {name: "Sumape miracle", passcode: "1008"}
-    ];
-    let subjects = JSON.parse(localStorage.getItem('subjects')) || [
-      "Mathematics", "Basic science", "English", "History", "Prevocational studies", "CRS"
-    ];
-    let quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
-    let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
-    let quizResults = JSON.parse(localStorage.getItem('quizResults')) || {};
-    let assignmentSubmissions = JSON.parse(localStorage.getItem('assignmentSubmissions')) || {};
-    let callRequests = JSON.parse(localStorage.getItem('callRequests')) || [];
-    
-    let stories = JSON.parse(localStorage.getItem('stories')) || [
-      {id: 1, type: "novel", title: "Oliver Twist - Chapter 1: The Workhouse", author: "Charles Dickens", content: "Among other public buildings in a certain town..."},
-      {id: 7, type: "nigerian_history", title: "The First Republic 1963-1966", author: "Nigerian History", content: "Nigeria became a republic on October 1st, 1963..."}
-    ];
-    
-    let currentUser = null;
-    let questionCount = 0;
-    let navHistory = [];
+  <div id="dashboard" class="hidden">
+    <div class="header-bar">
+      <h2 id="welcomeText"></h2>
+      <div>
+        <button class="btn-gray" onclick="goBack()">← Back</button>
+        <button class="btn-red" onclick="logout()">Logout</button>
+      </div>
+    </div>
 
-    window.onload = () => {
-      sessionStorage.removeItem('currentUser');
-      const saved = sessionStorage.getItem('currentUser');
-      if (saved) {
-        currentUser = JSON.parse(saved);
-        showDashboard();
-      }
+    <div class="tab-nav">
+      <div id="tab-assignments" onclick="switchTab('assignments')">Assignments</div>
+      <div id="tab-results" onclick="switchTab('results')">My Results</div>
+      <div id="tab-stories" onclick="switchTab('stories')">Stories</div>
+    </div>
 
-      document.getElementById('dashboardPage').addEventListener('scroll', () => {
-        const btn = document.getElementById('backToTopBtn');
-        if (document.getElementById('dashboardPage').scrollTop > 200) {
-          btn.classList.add('show');
-        } else {
-          btn.classList.remove('show');
-        }
-      });
-    };
+    <div id="content-assignments" class="hidden">
+      <h3>Your Assignments</h3>
+      <div id="assignmentsList">No assignments yet.</div>
+    </div>
 
-    function scrollToTop() {
-      document.getElementById('dashboardPage').scrollTo({ top: 0, behavior: 'smooth' });
+    <div id="content-results" class="hidden">
+      <h3>Your Results</h3>
+      <div id="resultsList">No results yet.</div>
+    </div>
+
+    <div id="content-stories" class="hidden">
+      <h3>Read Stories</h3>
+      <select id="storyCategory" onchange="loadStories()">
+        <option value="">Select Subject</option>
+        <option value="Nigerian History">Nigerian History</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="English">English</option>
+        <option value="Science">Science</option>
+      </select>
+      <div id="storiesList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "greatScholarsDB";
+let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { users:[], assignments:[], results:[] };
+let currentUser = null;
+
+const stories = {
+  "Nigerian History": [
+    {
+      title: "The Nigerian Civil War (1967-1970)",
+      content: "The Nigerian Civil War, also called the Biafran War, started on July 6, 1967 when the southeastern region declared independence as the Republic of Biafra. The war was caused by ethnic tension, political instability, and the 1966 coups. It lasted 30 months and ended on January 15, 1970 when Biafra surrendered. The war caused over 1 million deaths, mostly from starvation and disease."
+    },
+    {
+      title: "The First Republic (1963-1966)",
+      content: "Nigeria became a republic on October 1, 1963, cutting ties with the British monarchy. Dr. Nnamdi Azikiwe became the first President, and Sir Abubakar Tafawa Balewa remained Prime Minister. This period was marked by parliamentary democracy but also political rivalry and regional tension. The First Republic ended with the military coup of January 15, 1966."
+    },
+    {
+      title: "The Second Republic (1979-1983)",
+      content: "After 13 years of military rule, Nigeria returned to civilian rule in 1979. Shehu Shagari of the National Party of Nigeria (NPN) was elected President under the new presidential system. The Second Republic focused on economic development and the 'Green Revolution' but faced corruption and economic problems. It was ended by a military coup on December 31, 1983 led by General Muhammadu Buhari."
+    },
+    {
+      title: "Past Nigerian Leaders: Civilian & Military",
+      content: "Nigeria has had both military and civilian leaders since independence in 1960. Military leaders include General Yakubu Gowon (1966-1975), General Olusegun Obasanjo (1976-1979), General Ibrahim Babangida (1985-1993), and General Sani Abacha (1993-1998). Civilian leaders include Dr. Nnamdi Azikiwe, Sir Abubakar Tafawa Balewa, Alhaji Shehu Shagari, and from 1999 onwards, Olusegun Obasanjo, Umaru Yar'Adua, Goodluck Jonathan, Muhammadu Buhari, and Bola Tinubu."
     }
+  ],
+  "Mathematics": [
+    { title:"Algebra Basics", content:"Algebra uses letters to represent numbers. Example: If x+5=10, then x=5." },
+    { title:"Fractions", content:"A fraction represents part of a whole. 1/2 means one out of two equal parts." }
+  ],
+  "English": [
+    { title:"Parts of Speech", content:"The 8 parts of speech are noun, pronoun, verb, adjective, adverb, preposition, conjunction, and interjection." },
+    { title:"Tenses", content:"Tenses show the time of an action: past, present, and future." }
+  ],
+  "Science": [
+    { title:"The Water Cycle", content:"Water evaporates, forms clouds, condenses, and falls as rain in a continuous cycle." },
+    { title:"Photosynthesis", content:"Plants use sunlight, water, and CO2 to make food and release oxygen." }
+  ]
+};
 
-    function showLogin() {
-      document.getElementById('teacherLogin').classList.add('hidden');
-      document.getElementById('studentLogin').classList.add('hidden');
-      document.getElementById('errorMsg').style.display = 'none';
-      const role = document.getElementById('role').value;
-      if (role === 'teacher') {
-        document.getElementById('teacherLogin').classList.remove('hidden');
-      } else if (role === 'student') {
-        loadStudentDropdown();
-        document.getElementById('studentLogin').classList.remove('hidden');
-      }
-    }
+function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 
-    function loadStudentDropdown() {
-      const select = document.getElementById('studentSelect');
-      select.innerHTML = '<option value="">Select Your Name</option>';
-      students.forEach(s => {
-        select.innerHTML += `<option value="${s.name}">${s.name}</option>`;
-      });
-    }
+function showRegister() {
+  document.getElementById('loginForm').classList.add('hidden');
+  document.getElementById('registerForm').classList.remove('hidden');
+}
+function showLogin() {
+  document.getElementById('registerForm').classList.add('hidden');
+  document.getElementById('loginForm').classList.remove('hidden');
+}
 
-    function loginTeacher() {
-      if (document.getElementById('teacherPass').value === TEACHER_PASS) {
-        currentUser = {role: 'teacher', name: 'Teacher'};
-        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
-        showDashboard();
-      } else {
-        document.getElementById('errorMsg').style.display = 'block';
-      }
-    }
+document.getElementById('loginRole').addEventListener('change', function() {
+  document.getElementById('loginClass').classList.toggle('hidden', this.value!== 'Student');
+  document.getElementById('loginPassword').classList.toggle('hidden', this.value === 'Student');
+});
+document.getElementById('regRole').addEventListener('change', function() {
+  document.getElementById('regClass').classList.toggle('hidden', this.value!== 'Student');
+  document.getElementById('regPassword').classList.toggle('hidden', this.value === 'Student');
+});
 
-    function loginStudent() {
-      const name = document.getElementById('studentSelect').value;
-      const pass = document.getElementById('studentPass').value;
-      const student = students.find(s => s.name === name && s.passcode === pass);
-      if (student) {
-        currentUser = {role: 'student', name: student.name};
-        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
-        showDashboard();
-      } else {
-        document.getElementById('errorMsg').style.display = 'block';
-      }
-    }
+function register() {
+  const role = document.getElementById('regRole').value;
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const classVal = document.getElementById('regClass').value;
 
-    function showDashboard() {
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      navHistory = [];
+  if(!role ||!username) return alert("Fill all required fields");
+  if(role === 'Student' &&!classVal) return alert("Select class for student");
+  if(role!== 'Student' &&!password) return alert("Create a password");
 
-      if (currentUser.role === 'teacher') {
-        document.getElementById('welcomeText').textContent = 'Teacher Dashboard';
-        document.getElementById('teacherPanel').classList.remove('hidden');
-        document.getElementById('studentPanel').classList.add('hidden');
-        showTeacherHome();
-      } else {
-        document.getElementById('welcomeText').textContent = `Welcome, ${currentUser.name}`;
-        document.getElementById('studentPanel').classList.remove('hidden');
-        document.getElementById('teacherPanel').classList.add('hidden');
-        showStudentHome();
-      }
-      document.getElementById('dashboardPage').scrollTop = 0;
-      updateBackButton();
-    }
+  if(db.users.find(u => u.username === username)) return alert("Username already exists");
 
-    function showTeacherHome() {
-      document.getElementById('teacherHome').classList.remove('hidden');
-      document.querySelectorAll('[id^="tab-"]').forEach(d => d.classList.add('hidden'));
-      document.getElementById('tab-students').classList.remove('hidden');
-      renderStudents();
-      renderSubjects();
-      loadSubjectDropdowns();
-      renderAllQuizzes();
-      renderAllAssignments();
-      renderCallRequests();
-    }
+  db.users.push({ role, username, password, class: classVal });
+  saveDB();
+  alert("Registration successful! Login now.");
+  showLogin();
+}
 
-    function showStudentHome() {
-      document.getElementById('studentHome').classList.remove('hidden');
-      document.querySelectorAll('[id^="tab-"]').forEach(d => d.classList.add('hidden'));
-      document.getElementById('tab-myQuizzes').classList.remove('hidden');
-      loadStudentSubjectDropdown();
-      renderStudentResults();
-      renderMyCallHistory();
-    }
+function login() {
+  const role = document.getElementById('loginRole').value;
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const classVal = document.getElementById('loginClass').value;
 
-    function goBack() {
-      if (navHistory.length > 0) {
-        const lastTab = navHistory.pop();
-        switchTab(lastTab, false);
-      } else {
-        if (currentUser.role === 'teacher') {
-          showTeacherHome();
-        } else {
-          showStudentHome();
-        }
-      }
-      updateBackButton();
-      document.getElementById('dashboardPage').scrollTop = 0;
-    }
+  if(!role ||!username) return alert("Fill all required fields");
 
-    function updateBackButton() {
-      const backBtn = document.getElementById('backBtn');
-      backBtn.classList.toggle('hidden', navHistory.length === 0);
-    }
+  let user;
+  if(role === 'Student') {
+    user = db.users.find(u => u.role==='Student' && u.username===username && u.class===classVal);
+  } else {
+    user = db.users.find(u => u.role===role && u.username===username && u.password===password);
+  }
 
-    function logout() {
-      sessionStorage.removeItem('currentUser');
-      currentUser = null;
-      navHistory = [];
-      document.getElementById('dashboardPage').classList.add('hidden');
-      document.getElementById('loginPage').classList.remove('hidden');
-      document.getElementById('role').value = '';
-      showLogin();
-    }
+  if(!user) return alert("Invalid login details");
 
-    function switchTab(tab, pushHistory = true) {
-      const currentActive = document.querySelector('.tab.active')?.getAttribute('onclick')?.match(/'(.+?)'/)?.[1];
-      if (pushHistory && currentActive && currentActive !== tab) {
-        navHistory.push(currentActive);
-      }
+  currentUser = user;
+  document.getElementById('authPage').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  document.getElementById('welcomeText').innerText = `Welcome, ${user.username}`;
+  switchTab('assignments');
+}
 
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('[id^="tab-"]').forEach(d => d.classList.add('hidden'));
+function logout() {
+  currentUser = null;
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('authPage').classList.remove('hidden');
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+}
 
-      event.target.classList.add('active');
-      document.getElementById('tab-' + tab).classList.remove('hidden');
+function goBack() {
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('authPage').classList.remove('hidden');
+}
 
-      document.getElementById('dashboardPage').scrollTop = 0;
-      updateBackButton();
-    }
+function switchTab(tab) {
+  ['assignments','results','stories'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.remove('active');
+    document.getElementById(`content-${t}`).classList.add('hidden');
+  });
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById(`content-${tab}`).classList.remove('hidden');
 
-    function loadSubjectDropdowns() {
-      const selects = ['quizSubject', 'assignmentSubject', 'callSubject'];
-      selects.forEach(id => {
-        const select = document.getElementById(id);
-        if (select) {
-          select.innerHTML = '<option value="">Select Subject</option>';
-          subjects.forEach(s => {
-            select.innerHTML += `<option value="${s}">${s}</option>`;
-          });
-        }
-      });
-    }
+  if(tab==='assignments') loadAssignments();
+  if(tab==='results') loadResults();
+}
 
-    function loadStudentSubjectDropdown() {
-      const select = document.getElementById('studentSubjectSelect');
-      select.innerHTML = '<option value="">Choose a subject</option>';
-      subjects.forEach(s => {
-        select.innerHTML += `<option value="${s}">${s}</option>`;
-      });
+function loadAssignments() {
+  const list = document.getElementById('assignmentsList');
+  if(currentUser.role==='Student') {
+    const userAssignments = db.assignments.filter(a => a.class===currentUser.class);
+    list.innerHTML = userAssignments.length? userAssignments.map(a =>
+      `<div class="story-card"><h3>${a.subject}</h3><p>${a.task}</p></div>`
+    ).join('') : "No assignments yet.";
+  } else {
+    list.innerHTML = "<p>Teachers/Admins can add assignments in the admin panel.</p>";
+  }
+}
 
-      const assignSelect = document.getElementById('studentAssignmentSubject');
-      assignSelect.innerHTML = '<option value="">Choose a subject</option>';
-      subjects.forEach(s => {
-        assignSelect.innerHTML += `<option value="${s}">${s}</option>`;
-      });
-    }
+function loadResults() {
+  const list = document.getElementById('resultsList');
+  if(currentUser.role==='Student') {
+    const userResults = db.results.filter(r => r.username===currentUser.username);
+    list.innerHTML = userResults.length?
+      `<table><tr><th>Subject</th><th>Score</th></tr>${userResults.map(r =>
+        `<tr><td>${r.subject}</td><td>${r.score}</td></tr>`
+      ).join('')}</table>` : "No results yet.";
+  }
+}
 
-    function renderSubjects() {
-      const div = document.getElementById('subjectList');
-      div.innerHTML = '';
-      subjects.forEach((s, i) => {
-        div.innerHTML += `<div class="subject-badge">${s} <span onclick="removeSubject(${i})">×</span></div>`;
-      });
-      localStorage.setItem('subjects', JSON.stringify(subjects));
-    }
-
-    function addSubject() {
-      const subject = document.getElementById('newSubject').value.trim();
-      if (subject && !subjects.includes(subject)) {
-        subjects.push(subject);
-        document.getElementById('newSubject').value = '';
-        renderSubjects();
-        loadSubjectDropdowns();
-        loadStudentSubjectDropdown();
-      }
-    }
-
-    function removeSubject(i) {
-      subjects.splice(i, 1);
-      renderSubjects();
-      loadSubjectDropdowns();
-      loadStudentSubjectDropdown();
-    }
-
-    function renderStudents() {
-      const div = document.getElementById('studentList');
-      div.innerHTML = '';
-      students.forEach((s, i) => {
-        div.innerHTML += `<div class="student-badge">${s.name} - ${s.passcode} <span onclick="removeStudent(${i})">×</span></div>`;
-      });
-      localStorage.setItem('students', JSON.stringify(students));
-    }
-
-    function addStudent() {
-      const name = document.getElementById('newStudent').value.trim();
-      const passcode = document.getElementById('newPasscode').value.trim();
-      if (name && passcode && !students.find(s => s.name === name)) {
-        students.push({name, passcode});
-        document.getElementById('newStudent').value = '';
-        document.getElementById('newPasscode').value = '';
-        renderStudents();
-        loadStudentDropdown();
-      }
-    }
-
-    function removeStudent(i) {
-      students.splice(i, 1);
-      renderStudents();
-      loadStudentDropdown();
-    }
-
-    function renderAllQuizzes() {
-      const div = document.getElementById('allQuizzes');
-      if (quizzes.length === 0) {
-        div.innerHTML = '<p>No quizzes yet.</p>';
-        return;
-      }
-      div.innerHTML = quizzes.map(q => `<div class="quiz-card"><h4>${q.title}</h4><p>Subject: ${q.subject}</p></div>`).join('');
-    }
-
-    function renderAllAssignments() {
-      const div = document.getElementById('allAssignments');
-      if (assignments.length === 0) {
-        div.innerHTML = '<p>No assignments yet.</p>';
-        return;
-      }
-      div.innerHTML = assignments.map(a => `<div class="assignment"><h4>${a.title}</h4><p>Subject: ${a.subject}</p></div>`).join('');
-    }
-
-    function renderCallRequests() {
-      const div = document.getElementById('callRequests');
-      if (callRequests.length === 0) {
-        div.innerHTML = '<p>No call requests yet.</p>';
-        return;
-      }
-      div.innerHTML = callRequests.map(r => `<div class="call-request ${r.status}"><h4>${r.student} - ${r.subject}</h4><p>${r.reason}</p></div>`).join('');
-    }
-
-    function renderStudentResults() {
-      document.getElementById('studentResults').innerHTML = '<p>No results yet.</p>';
-    }
-
-    function renderMyCallHistory() {
-      document.getElementById('myCallHistory').innerHTML = '<p>No call requests yet.</p>';
-    }
-
-    function loadStudentQuizzes() {}
-    function loadQuiz() {}
-    function loadStudentAssignments() {}
-    function loadAssignment() {}
-    function addQuestion() {}
-    function saveQuiz() {}
-    function saveAssignment() {}
-    function requestCall() {}
-    function loadStories() {}
-    function readStory() {}
-    function closeStory() {}
-    function markCallCompleted() {}
-  </script>
+function loadStories() {
+  const cat = document.getElementById('storyCategory').value;
+  const list = document.getElementById('storiesList');
+  if(!cat) { list.innerHTML = ""; return; }
+  const catStories = stories[cat] || [];
+  list.innerHTML = catStories.length? catStories.map(s =>
+    `<div class="story-card"><h3>${s.title}</h3><p>${s.content}</p></div>`
+  ).join('') : "<p>No stories available for this subject yet.</p>";
+}
+</script>
 </body>
 </html>
