@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Great Scholars Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .login-box {
+      max-width: 450px;
+      max-height: none;
+      overflow-y: visible;
+      margin: 50px auto;
+      text-align: center;
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      margin: 0 auto 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+      flex-shrink: 0;
+    }
+    .header-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .header-actions { display: flex; gap: 10px; }
+    h1 { color: #333; margin-bottom: 5px; font-size: 26px; }
+    h2 { color: #333; margin: 15px 0 10px; font-size: 22px; }
+    h3 { color: #333; margin: 20px 0 10px; font-size: 18px; }
+    p { color: #666; margin-bottom: 15px; font-size: 15px; line-height: 1.6; text-align: left; }
+    select, input, textarea {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover { background: #5568d3; }
+    .btn-small { width: auto; padding: 8px 16px; font-size: 14px; margin-right: 8px; }
+    .btn-danger { background: #e74c3c; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-success { background: #27ae60; }
+    .btn-success:hover { background: #229954; }
+    .btn-ghost {
+      background: transparent;
+      border: 2px solid #667eea;
+      color: #667eea;
+    }
+    .btn-ghost:hover {
+      background: #667eea;
+      color: white;
+    }
+    .btn-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: auto;
+      padding: 12px 20px;
+      background: #333;
+      color: white;
+      border-radius: 50px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-top.show { display: block; opacity: 1; }
+    .error {
+      color: #e74c3c;
+      margin-top: 15px;
+      font-size: 14px;
+      display: none;
+      text-align: center;
+    }
+    .hidden { display: none; }
+    .student-badge,.subject-badge {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 8px 12px;
+      margin: 5px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+    .student-badge span,.subject-badge span {
+      margin-left: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .quiz-card,.assignment,.call-request,.story-card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    .story-content {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .assignment.overdue {
+      border-left: 4px solid #e74c3c;
+    }
+    .assignment.submitted {
+      border-left: 4px solid #27ae60;
+    }
+    .call-request.pending {
+      border-left: 4px solid #f39c12;
+    }
+    .call-request.completed {
+      border-left: 4px solid #27ae60;
+    }
+    .form-bottom {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #f0f0f0;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+      overflow-x: auto;
+    }
+    .tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      font-weight: 600;
+      color: #666;
+      white-space: nowrap;
+    }
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    .tab-content {
+      min-height: 200px;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .container { padding: 20px; max-height: 95vh; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .btn-top { bottom: 20px; right: 20px; padding: 10px 16px; font-size: 14px; }
+      .header-actions { width: 100%; justify-content: flex-end; }
+      .header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginPage" class="container login-box">
+    <div class="logo">
+      <img src="your-logo.png" alt="Logo">
+    </div>
+    <h1>Great Scholars Portal</h1>
+    <p>Select your role to continue</p>
+    <div>
+      <select id="role" onchange="showLogin()">
+        <option value="">Select Role</option>
+        <option value="teacher">Teacher</option>
+        <option value="student">Student</option>
+      </select>
+    </div>
+    <div id="teacherLogin" class="hidden">
+      <input type="password" id="teacherPass" placeholder="Enter teacher passcode">
+      <button onclick="loginTeacher()">Login</button>
+    </div>
+    <div id="studentLogin" class="hidden">
+      <select id="studentSelect">
+        <option value="">Select Your Name</option>
+      </select>
+      <input type="password" id="studentPass" placeholder="Enter your passcode">
+      <button onclick="loginStudent()">Login</button>
+    </div>
+    <div class="error" id="errorMsg">Invalid code. Try again.</div>
+  </div>
+
+  <div id="dashboardPage" class="container hidden">
+    <button id="backToTopBtn" class="btn-top" onclick="scrollToTop()">↑ Back to Top</button>
+
+    <div class="header">
+      <div class="header-left">
+        <div class="header-logo">
+          <img src="your-logo.png" alt="Logo">
+        </div>
+        <h1 id="welcomeText">Dashboard</h1>
+      </div>
+      <div class="header-actions">
+        <button id="backBtn" class="btn-small btn-ghost hidden" onclick="goBack()">← Back</button>
+        <button class="btn-small btn-danger" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div id="teacherPanel" class="hidden">
+      <div id="teacherHome" class="tabs">
+        <div class="tab active" onclick="switchTab('students')">Students</div>
+        <div class="tab" onclick="switchTab('subjects')">Subjects</div>
+        <div class="tab" onclick="switchTab('quizzes')">Quizzes</div>
+        <div class="tab" onclick="switchTab('assignments')">Assignments</div>
+        <div class="tab" onclick="switchTab('results')">Results</div>
+        <div class="tab" onclick="switchTab('callLog')">Call Log</div>
+      </div>
+
+      <div id="tab-students" class="tab-content">
+        <h3>Students List</h3>
+        <div id="studentList"></div>
+        <div class="form-bottom">
+          <h3>Add New Student</h3>
+          <div class="grid-2">
+            <input type="text" id="newStudent" placeholder="Student name">
+            <input type="text" id="newPasscode" placeholder="Passcode (4 digits)">
+          </div>
+          <button class="btn-success" onclick="addStudent()">Add Student</button>
+        </div>
+      </div>
+
+      <div id="tab-subjects" class="tab-content hidden">
+        <h3>Current Subjects</h3>
+        <div id="subjectList"></div>
+        <div class="form-bottom">
+          <h3>Add New Subject</h3>
+          <input type="text" id="newSubject" placeholder="Add new subject">
+          <button class="btn-success" onclick="addSubject()">Add Subject</button>
+        </div>
+      </div>
+
+      <div id="tab-quizzes" class="tab-content hidden">
+        <h3>All Quizzes</h3>
+        <div id="allQuizzes"></div>
+        <div class="form-bottom">
+          <h3>Create Quiz</h3>
+          <select id="quizSubject">
+            <option value="">Select Subject</option>
+          </select>
+          <input type="text" id="quizTitle" placeholder="Quiz Title">
+          <div id="questionsContainer"></div>
+          <button class="btn-small" onclick="addQuestion()">+ Add Question</button>
+          <button onclick="saveQuiz()">Save Quiz</button>
+        </div>
+      </div>
+
+      <div id="tab-assignments" class="tab-content hidden">
+        <h3>All Assignments</h3>
+        <div id="allAssignments"></div>
+        <div class="form-bottom">
+          <h3>Post New Assignment</h3>
+          <select id="assignmentSubject">
+            <option value="">Select Subject</option>
+          </select>
+          <input type="text" id="assignmentTitle" placeholder="Assignment Title">
+          <textarea id="assignmentDesc" rows="4" placeholder="Instructions for students"></textarea>
+          <input type="date" id="assignmentDue">
+          <button onclick="saveAssignment()">Post Assignment</button>
+        </div>
+      </div>
+
+      <div id="tab-results" class="tab-content hidden">
+        <h3>Results</h3>
+        <div id="resultsList"></div>
+      </div>
+
+      <div id="tab-callLog" class="tab-content hidden">
+        <h3>Call Requests</h3>
+        <div id="callRequests"></div>
+      </div>
+    </div>
+
+    <div id="studentPanel" class="hidden">
+      <div id="studentHome" class="tabs">
+        <div class="tab active" onclick="switchTab('myQuizzes')">Take Quiz</div>
+        <div class="tab" onclick="switchTab('myAssignments')">Assignments</div>
+        <div class="tab" onclick="switchTab('myResults')">My Results</div>
+        <div class="tab" onclick="switchTab('stories')">Stories</div>
+        <div class="tab" onclick="switchTab('myCallLog')">Request Call</div>
+      </div>
+
+      <div id="tab-myQuizzes" class="tab-content">
+        <div id="quizArea">
+          <p>Select a subject and quiz below to start</p>
+        </div>
+        <div class="form-bottom">
+          <h3>Select Quiz</h3>
+          <select id="studentSubjectSelect" onchange="loadStudentQuizzes()">
+            <option value="">Choose a subject</option>
+          </select>
+          <div id="quizSelectDiv" class="hidden">
+            <select id="studentQuizSelect" onchange="loadQuiz()">
+              <option value="">Choose a quiz</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-myAssignments" class="tab-content hidden">
+        <div id="assignmentArea">
+          <p>Select an assignment to view and submit</p>
+        </div>
+        <div class="form-bottom">
+          <h3>Select Assignment</h3>
+          <select id="studentAssignmentSubject" onchange="loadStudentAssignments()">
+            <option value="">Choose a subject</option>
+          </select>
+          <div id="assignmentSelectDiv" class="hidden">
+            <select id="studentAssignmentSelect" onchange="loadAssignment()">
+              <option value="">Choose an assignment</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-myResults" class="tab-content hidden">
+        <h3>Your Scores</h3>
+        <div id="studentResults"></div>
+      </div>
+
+      <div id="tab-stories" class="tab-content hidden">
+        <h3>Read Stories</h3>
+        <select id="storyType" onchange="loadStories()">
+          <option value="">Select Story Type</option>
+          <option value="novel">Novel</option>
+          <option value="short">Short Story</option>
+          <option value="folktale">Folktale</option>
+          <option value="nigerian_history">Nigerian History</option>
+        </select>
+        <div id="storyList"></div>
+        <div id="storyReader" class="hidden">
+          <button class="btn-small btn-ghost" onclick="closeStory()">← Back to List</button>
+          <div id="storyContent"></div>
+        </div>
+      </div>
+
+      <div id="tab-myCallLog" class="tab-content hidden">
+        <h3>Request a Call with Teacher</h3>
+        <select id="callSubject">
+          <option value="">Select Subject</option>
+        </select>
+        <input type="text" id="callReason" placeholder="Reason for call">
+        <input type="text" id="callPhone" placeholder="Your phone number">
+        <button onclick="requestCall()">Send Call Request</button>
+        <h3 style="margin-top:30px;">Your Call History</h3>
+        <div id="myCallHistory"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TEACHER_PASS = "1234";
+    const TEACHER_PHONE = "+2348000000";
+    let students = JSON.parse(localStorage.getItem('students')) || [
+      {name: "Asikhia diamond", passcode: "1001"},
+      {name: "Ogedengbe success", passcode: "1002"},
+      {name: "Ifada Sonia", passcode: "1003"},
+      {name: "Mbah favour", passcode: "1004"},
+      {name: "Omosigho trinity", passcode: "1005"},
+      {name: "Odion praise", passcode: "1006"},
+      {name: "Igbinoba Osasenaga", passcode: "1007"},
+      {name: "Sumape miracle", passcode: "1008"}
+    ];
+    let subjects = JSON.parse(localStorage.getItem('subjects')) || [
+      "Mathematics", "Basic science", "English", "History", "Prevocational studies", "CRS"
+    ];
+    let quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+    let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
+    let quizResults = JSON.parse(localStorage.getItem('quizResults')) || {};
+    let assignmentSubmissions = JSON.parse(localStorage.getItem('assignmentSubmissions')) || {};
+    let callRequests = JSON.parse(localStorage.getItem('callRequests')) || [];
+    
+    let stories = JSON.parse(localStorage.getItem('stories')) || [
+      {
+        id: 1,
+        type: "novel",
+        title: "Oliver Twist - Chapter 1: The Workhouse",
+        author: "Charles Dickens",
+        content: "Among other public buildings in a certain town, which for many reasons it will be prudent to refrain from mentioning, and to which I will assign no fictitious name, there is one anciently common to most towns, great or small: to wit, a workhouse. In this workhouse was born... the item of mortality whose name is prefixed to the head of this chapter. For a long time after it was ushered into this world of sorrow and trouble, by the parish surgeon, it remained a matter of considerable doubt whether the child would survive to bear any name at all."
+      },
+      {
+        id: 2,
+        type: "novel",
+        title: "Oliver Twist - Chapter 2: Oliver Asks for More",
+        author: "Charles Dickens",
+        content: "The evening arrived; the boys took their places. The master, in his cook's uniform, stationed himself at the copper; his pauper assistants ranged themselves behind him; the gruel was served out; and a long grace was said over the short commons. The gruel disappeared; the boys whispered each other, and winked at Oliver; while his next neighbours nudged him. Child as he was, he was desperate with hunger, and reckless with misery. He rose from the table; and advancing to the master, basin and spoon in hand, said, 'Please, sir, I want some more.'"
+      },
+      {
+        id: 3,
+        type: "novel",
+        title: "Oliver Twist - Chapter 3: Oliver Runs Away",
+        author: "Charles Dickens",
+        content: "Oliver, being left to himself now, but not being left at ease, betook himself to his old refuge, the brick-maker's yard; and there, sitting upon a heap of bricks, he pondered over the kindness and cruelty, the justice and injustice, of his early life. He had not been there long, when he was joined by a boy, who had been in the workhouse before him, and who was now apprenticed to a chimney-sweeper."
+      },
+      {
+        id: 4,
+        type: "novel",
+        title: "Oliver Twist - Chapter 4: Oliver Meets the Artful Dodger",
+        author: "Charles Dickens",
+        content: "It was nearly eight o'clock, when Oliver found himself alone in the streets. He had no idea where to go; and was wandering up and down, without any definite purpose, when he was accosted by a young gentleman about his own age, who said, 'Hullo, my covey! what's the row?' Oliver looked up, and saw a boy of about his own age, with a very dirty face, and a very ragged coat."
+      },
+      {
+        id: 5,
+        type: "novel",
+        title: "Oliver Twist - Chapter 5: The Fagin's Den",
+        author: "Charles Dickens",
+        content: "The boy followed the old gentleman through a dark, narrow, dirty street, and turned into a court, from which another court branched off, and then another. At length they stopped before a low, old house, with a sign of a green tree over the door. The old gentleman knocked, and a voice from within demanded who was there."
+      },
+      {
+        id: 6,
+        type: "novel",
+        title: "Oliver Twist - Chapter 6: Oliver's Education",
+        author: "Charles Dickens",
+        content: "It was not until Oliver had been with Fagin for some weeks, that he began to understand the real nature of the old man's business. He was instructed in the art of picking pockets, and was taken out on expeditions with the Artful Dodger and Charley Bates. At first, Oliver refused to participate, but hunger and fear gradually wore down his resistance."
+      },
+      {
+        id: 7,
+        type: "nigerian_history",
+        title: "The First Republic 1963-1966",
+        author: "Nigerian History",
+        content: "Nigeria became a republic on October 1st, 1963. Dr. Nnamdi Azikiwe became the first President. The First Republic operated under a parliamentary system with Sir Abubakar Tafawa Balewa as Prime Minister. This period was marked by regional governments, political rivalries, and economic development. The republic ended with the military coup of January 15th, 1966."
+      },
+      {
+        id: 8,
+        type: "nigerian_history",
+        title: "The Nigerian Civil War 1967-1970",
+        author: "Nigerian History",
+        content: "The Nigerian Civil War, also called the Biafran War, lasted from July 6th, 1967 to January 15th, 1970. It began after the Eastern Region declared independence as the Republic of Biafra. The war was fought between the Nigerian federal government and Biafran forces. It ended with Biafra's surrender and Nigeria's reunification under the slogan 'No Victor, No Vanquished'."
+      },
+      {
+        id: 9,
+        type: "nigerian_history",
+        title: "The Second Republic 1979-1983",
+        author: "Nigerian History",
+        content: "The Second Republic began on October 1st, 1979 when Nigeria returned to civilian rule. Alhaji Shehu Shagari was elected President under the new presidential system. The National Party of Nigeria won the election. This republic ended on December 31st, 1983 with another military coup led by Major General Muhammadu Buhari."
+      },
+      {
+        id: 10,
+        type: "nigerian_history",
+        title: "Past Military and Civilian Leaders",
+        author: "Nigerian History",
+        content: "Nigeria has been led by both military and civilian leaders since independence in 1960. Military leaders include Generals Ironsi, Gowon, Murtala Muhammed, Obasanjo, Buhari, Babangida, Abacha, and Abdulsalami. Civilian leaders include Tafawa Balewa, Nnamdi Azikiwe, Shehu Shagari, Ernest Shonekan, and from 1999 onwards: Obasanjo, Yar'Adua, Jonathan, Buhari, and Tinubu. Each leader shaped Nigeria's political and economic direction."
+      }
+    ];
+    
+    let currentUser = null;
+    let questionCount = 0;
+    let navHistory = [];
+
+    window.onload = () => {
+      sessionStorage.removeItem('currentUser');
+      const saved = sessionStorage.getItem('currentUser');
+      if (saved) {
+        currentUser = JSON.parse(saved);
+        showDashboard();
+      }
+
+      document.getElementById('dashboardPage').addEventListener('scroll', () => {
+        const btn = document.getElementById('backToTopBtn');
+        if (document.getElementById('dashboardPage').scrollTop > 200) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      });
+    };
+
+    function scrollToTop() {
+      document.getElementById('dashboardPage').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showLogin() {
+      document.getElementById('teacherLogin').classList.add('hidden');
+      document.getElementById('studentLogin').classList.add('hidden');
+      document.getElementById('errorMsg').style.display = 'none';
+      if (document.getElementById('role').value === 'teacher') {
+        document.getElementById('teacherLogin').classList.remove('hidden');
+      } else if (document.getElementById('role').value === 'student') {
+        loadStudentDropdown();
+        document.getElementById('studentLogin').classList.remove('hidden');
+      }
+    }
+
+    function loadStudentDropdown() {
+      const select = document.getElementById('studentSelect');
+      select.innerHTML = '<option value="">Select Your Name</option>';
+      students.forEach(s => {
+        select.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+      });
+    }
+
+    function loginTeacher() {
+      if (document.getElementById('teacherPass').value === TEACHER_PASS) {
+        currentUser = {role: 'teacher', name: 'Teacher'};
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+        showDashboard();
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    }
+
+    function loginStudent() {
+      const name = document.getElementById('studentSelect').value;
+      const pass = document.getElementById('studentPass').value;
+      const student = students.find(s => s.name === name && s.passcode === pass);
+      if (student) {
+        currentUser = {role: 'student', name: student.name};
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+        showDashboard();
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('dashboardPage').classList.remove('hidden');
+      navHistory = [];
+
+      if (currentUser.role === 'teacher') {
+        document.getElementById('welcomeText').textContent = 'Teacher Dashboard';
+        document.getElementById('teacherPanel').classList.remove('hidden');
+        document.getElementById('studentPanel').classList.add('hidden');
+        showTeacherHome();
+      } else {
+        document.getElementById('welcomeText').textContent = `Welcome, ${currentUser.name}`;
+        document.getElementById('studentPanel').classList.remove('hidden');
+        document.getElementById('teacherPanel').classList.add('hidden');
+        showStudentHome();
+      }
+      document.getElementById('dashboardPage').scrollTop = 0;
+      updateBackButton();
+    }
+
+    function showTeacherHome() {
+      document.getElementById('teacherHome').classList.remove('hidden');
+      document.querySelectorAll('[id^="tab-"]').forEach(d => d.classList.add('hidden'));
+      document.getElementById('tab-students').classList.remove('hidden');
+      renderStudents();
+      renderSubjects();
+      loadSubjectDropdowns();
+      renderAllQuizzes();
+      renderAllAssignments();
+      renderCallRequests();
+    }
+
+    function showStudentHome() {
+      document.getElementById('studentHome').classList.remove('hidden');
+      document.querySelectorAll('[id^="tab-"]').forEach(d => d.classList.add('hidden'));
+      document.getElementById('tab-myQuizzes').classList.remove('hidden');
+      loadStudentSubjectDropdown();
+      renderStudentResults();
+      renderMyCallHistory();
+    }
+
+    function goBack() {
+      if (navHistory.length > 0) {
+        const lastTab = navHistory.pop();
+        switchTab(lastTab, false);
+      } else {
+        if (currentUser.role === 'teacher') {
+          showTeacherHome();
+        } else {
+          showStudentHome();
+        }
+      }
+      updateBackButton();
+      document.getElementById('dashboardPage').scrollTop = 0;
+    }
+
+    function updateBackButton() {
+      const backBtn = document.getElementById('backBtn');
+      backBtn.classList.toggle('hidden', navHistory.length === 0);
+    }
+
+    function logout() {
+      sessionStorage.removeItem('currentUser');
+      currentUser = null;
+      navHistory = [];
+      document.getElementById('dashboardPage').classList.add('hidden');
+      document.getElementById('loginPage').classList.remove('hidden');
+      document.getElementById('role').value = '';
+      showLogin();
+    }
+
+    function switchTab(tab, pushHistory = true) {
+      const currentActive = document.querySelector('.tab.active')?.getAttribute('onclick')?.match(/'(.+?)'/)?.[1];
+      if (pushHistory && currentActive && currentActive!== tab) {
+        navHistory.push(currentActive);
+      }
+
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('[id^="tab-"]').forEach(d => d.classList.add('hidden'));
+
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+
+      document.getElementById('dashboardPage').scrollTop = 0;
+      updateBackButton();
+    }
+
+    function loadSubjectDropdowns() {
+      const selects = ['quizSubject', 'assignmentSubject', 'callSubject'];
+      selects.forEach(id => {
+        const select = document.getElementById(id);
+        if (select) {
+          select.innerHTML = '<option value="">Select Subject</option>';
+          subjects.forEach(s => {
+            select.innerHTML += `<option value="${s}">${s}</option>`;
+          });
+        }
+      });
+    }
+
+    function loadStudentSubjectDropdown() {
+      const select = document.getElementById('studentSubjectSelect');
+      select.innerHTML = '<option value="">Choose a subject</option>';
+      subjects.forEach(s => {
+        select.innerHTML += `<option value="${s}">${s}</option>`;
+      });
+
+      const assignSelect = document.getElementById('studentAssignmentSubject');
+      assignSelect.innerHTML = '<option value="">Choose a subject</option>';
+      subjects.forEach(s => {
+        assignSelect.innerHTML += `<option value="${s}">${s}</option>`;
+      });
+    }
+
+    function loadStories() {
+      const type = document.getElementById('storyType').value;
+      const div = document.getElementById('storyList');
+      
+      if (!type) {
+        div.innerHTML = '';
+        return;
+      }
+
+      const filteredStories = stories.filter(s => s.type === type);
+      
+      if (filteredStories.length === 0) {
+        div.innerHTML = '<p>No stories available in this category yet.</p>';
+        return;
+      }
+
+      div.innerHTML = filteredStories.map(s => `
+        <div class="story-card">
+          <h4>${s.title}</h4>
+          <p><em>by ${s.author}</em></p>
+          <button class="btn-small" onclick="readStory(${s.id})">Read Story</button>
+        </div>
+      `).join('');
+    }
+
+    function readStory(id) {
+      const story = stories.find(s => s.id === id);
+      if (!story) return;
+
+      document.getElementById('storyList').classList.add('hidden');
+      document.getElementById('storyReader').classList.remove('hidden');
+      
+      document.getElementById('storyContent').innerHTML = `
+        <h2>${story.title}</h2>
+        <p><em>by ${story.author}</em></p>
+        <div class="story-content">
+          <p>${story.content}</p>
+        </div>
+      `;
+    }
+
+    function closeStory() {
+      document.getElementById('storyReader').classList.add('hidden');
+      document.getElementById('storyList').classList.remove('hidden');
+    }
+
+    function requestCall() {
+      const subject = document.getElementById('callSubject').value;
+      const reason = document.getElementById('callReason').value;
+      const phone = document.getElementById('callPhone').value;
+
+      if (!subject || !reason || !phone) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      const id = Date.now();
+      callRequests.push({
+        id,
+        student: currentUser.name,
+        subject,
+        reason,
+        phone,
+        status: 'pending',
+        time: new Date().toLocaleString()
+      });
+
+      localStorage.setItem('callRequests', JSON.stringify(callRequests));
+      alert('Call request sent!');
+      document.getElementById('callReason').value = '';
+      document.getElementById('callPhone').value = '';
+      renderMyCallHistory();
+    }
+
+    function renderMyCallHistory() {
+      const div = document.getElementById('myCallHistory');
+      const myRequests = callRequests.filter(r => r.student === currentUser.name);
+      
+      if (myRequests.length === 0) {
+        div.innerHTML = '<p>No call requests yet.</p>';
+        return;
+      }
+
+      div.innerHTML = myRequests.map(r => `
+        <div class="call-request ${r.status}">
+          <h4>${r.subject}</h4>
+          <p><strong>Reason:</strong> ${r.reason}</p>
+          <p><strong>Status:</strong> ${r.status} | <strong>Time:</strong> ${r.time}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderCallRequests() {
+      const div = document.getElementById('callRequests');
+      
+      if (callRequests.length === 0) {
+        div.innerHTML = '<p>No call requests yet.</p>';
+        return;
+      }
+
+      div.innerHTML = callRequests.map(r => `
+        <div class="call-request ${r.status}">
+          <h4>${r.student} - ${r.subject}</h4>
+          <p><strong>Reason:</strong> ${r.reason}</p>
+          <p><strong>Phone:</strong> ${r.phone}</p>
+          <p><strong>Time:</strong> ${r.time}</p>
+          ${r.status === 'pending' ? `<button class="btn-small btn-success" onclick="markCallCompleted(${r.id})">Mark Completed</button>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function markCallCompleted(id) {
+      const request = callRequests.find(r => r.id === id);
+      if (request) {
+        request.status = 'completed';
+        localStorage.setItem('callRequests', JSON.stringify(callRequests));
+        renderCallRequests();
+      }
+    }
+
+    function renderStudents() {
+      const div = document.getElementById('studentList');
+      div.innerHTML = '';
+      students.forEach((s, i) => {
+        div.innerHTML += `<div class="student-badge">${s.name} - ${s.passcode} <span onclick="removeStudent(${i})">×</span></div>`;
+      });
+      localStorage.setItem('students', JSON.stringify(students));
+    }
+
+    function addStudent() {
+      const name = document.getElementById('newStudent').value
