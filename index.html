@@ -1,10 +1,133 @@
 
-<select id="storySubject" onchange="loadStory()">
-          <option value="">Select Subject</option>
-          <option value="Nigerian History">Nigerian History</option>
-        </select>
-        <div id="storyContent"></div>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Portal</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+  }
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  h1, h2, h3 {
+    color: #333;
+  }
+  input, select, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  button {
+    background: #1976d2;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #1565c0;
+  }
+.hidden {
+    display: none;
+  }
+.story {
+    background: #e3f2fd;
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 4px solid #1976d2;
+    border-radius: 6px;
+  }
+.panel {
+    margin-top: 20px;
+  }
+.logout {
+    background: #d32f2f;
+  }
+.logout:hover {
+    background: #b71c1c;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="loginScreen">
+    <h1>School Portal Login</h1>
+    <select id="role">
+      <option value="">Select Role</option>
+      <option value="admin">Teacher/Admin</option>
+      <option value="student">Student</option>
+    </select>
+
+    <div id="adminLogin" class="hidden">
+      <input type="text" id="adminUser" placeholder="Username">
+      <input type="password" id="adminPass" placeholder="Password">
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div id="studentLogin" class="hidden">
+      <select id="studentClass">
+        <option value="">Select Class</option>
+        <option value="Basic Six">Basic Six</option>
+      </select>
+      <select id="studentName">
+        <option value="">Select Student</option>
+      </select>
+      <input type="password" id="studentPass" placeholder="4-digit Passcode">
+      <button onclick="login()">Login</button>
+    </div>
+  </div>
+
+  <div id="portal" class="hidden">
+    <h2 id="welcome"></h2>
+    <button class="logout" onclick="logout()">Logout</button>
+
+    <div id="adminPanel" class="hidden panel">
+      <h3>Admin Panel</h3>
+
+      <h4>Add Student</h4>
+      <input type="text" id="newStudentName" placeholder="Student Name">
+      <input type="text" id="newStudentPass" placeholder="4-digit Passcode" maxlength="4">
+      <button onclick="addStudent()">Add Student</button>
+
+      <h4>Add Subject</h4>
+      <input type="text" id="newSubject" placeholder="Subject Name">
+      <button onclick="addSubject()">Add Subject</button>
+
+      <h4>Post Assignment</h4>
+      <select id="assignSubject"></select>
+      <textarea id="assignmentText" placeholder="Assignment text"></textarea>
+      <button onclick="postAssignment()">Post Assignment</button>
+
+      <h4>Students</h4>
+      <button onclick="viewStudents()">View Students</button>
+      <div id="studentList" class="hidden"></div>
+    </div>
+
+    <div id="studentPanel" class="hidden panel">
+      <h3>Student Panel</h3>
+
+      <h4>Assignments</h4>
+      <div id="assignmentList">No assignments yet.</div>
+
+      <h4>Stories</h4>
+      <select id="storySubject" onchange="loadStory()">
+        <option value="">Select Subject</option>
+      </select>
+      <div id="storyContent"></div>
     </div>
   </div>
 </div>
@@ -32,26 +155,8 @@ let students = {
 
 let subjects = ["Mathematics", "English", "Prevocational Studies", "CCA"];
 let assignments = [];
-let stories = {
-  "Nigerian History": [
-  {
-    title: "The story of Moremi and her sacrifice for Ile-Ife.",
-    content: "Moremi was a brave queen of Ile-Ife who risked her life to discover the secret of the Igbo people who were attacking her kingdom. She dressed as a slave, got captured, and learned that they were spirits covered in raffia. She escaped and told her people, who then defeated them. Afterward, she sacrificed her only son as promised to the gods for victory."
-  },
-  {
-    title: "How the River Niger got its name.",
-    content: "The name 'Niger' comes from the Latin word 'niger' meaning black. Early European explorers saw the dark water of the river and called it River Niger. The river is one of the longest in Africa and is very important for trade, farming, and transportation in Nigeria."
-  },
-  {
-    title: "The Nigerian Civil War 1967-1970 - causes and effects.",
-    content: "The Nigerian Civil War, also called the Biafran War, happened because of ethnic tensions, political disagreements, and control of oil resources. It lasted from 1967 to 1970 between the Nigerian government and the secessionist state of Biafra. Over a million people died, mostly from hunger and disease. The war ended with Biafra rejoining Nigeria."
-  },
-  {
-    title: "The First Republic 1963-1966 and the Second Republic 1979-1983.",
-    content: "The First Republic ran from 1963 to 1966 under Prime Minister Tafawa Balewa and President Nnamdi Azikiwe. It ended with a military coup. The Second Republic ran from 1979 to 1983 under President Shehu Shagari. It was Nigeria’s second attempt at civilian rule but also ended with a military coup due to corruption and economic problems."
-  }
-]
-  };
+let stories = {};
+
 const adminUser = "admin";
 const adminPass = "admin123";
 
