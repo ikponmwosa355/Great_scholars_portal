@@ -5,264 +5,252 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Great Scholars Portal</title>
 <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-  body { background:linear-gradient(135deg,#6a11cb,#2575fc); min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; }
-.container { background:#fff; border-radius:15px; padding:30px; width:100%; max-width:500px; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
-  h1 { text-align:center; color:#333; margin-bottom:20px; }
-.logo { display:block; margin:0 auto 20px; width:80px; height:80px; border-radius:50%; background:#ddd; object-fit:cover; }
-  input, select, button, textarea { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:8px; font-size:16px; }
-  button { background:#2575fc; color:#fff; border:none; cursor:pointer; font-weight:bold; }
-  button:hover { background:#1a5edb; }
-.btn-red { background:#ff4d4d; }
-.btn-red:hover { background:#e63939; }
-.btn-gray { background:#6c757d; }
-.btn-gray:hover { background:#5a6268; }
-.hidden { display:none; }
-.tab-nav { display:flex; border-bottom:2px solid #eee; margin:15px 0; }
-.tab-nav div { flex:1; text-align:center; padding:10px; cursor:pointer; color:#666; }
-.tab-nav div.active { color:#2575fc; border-bottom:2px solid #2575fc; font-weight:bold; }
-.story-card { background:#f8f9fa; padding:15px; margin:10px 0; border-radius:8px; border-left:4px solid #2575fc; }
-.story-card h3 { color:#333; margin-bottom:8px; }
-  table { width:100%; border-collapse:collapse; margin-top:10px; }
-  th, td { border:1px solid #ddd; padding:8px; text-align:left; }
-  th { background:#f2f2f2; }
-.header-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
-.header-bar h2 { margin:0; font-size:20px; }
-.header-bar button { width:auto; padding:8px 15px; margin:0 5px; }
+body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+.container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+h1, h2, h3 { color: #333; }
+.hidden { display: none; }
+input, select, textarea, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+textarea { height: 80px; resize: vertical; }
+button { background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 4px; }
+button:hover { background: #45a049; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background: #4CAF50; color: white; }
+.story-card, .assignment-card, .admin-card { background: #e8f5e9; padding: 15px; margin: 10px 0; border-radius: 5px; }
+.logout { background: #f44336; }
+.logout:hover { background: #d32f2f; }
+hr { margin: 30px 0; border: 0; border-top: 1px solid #ddd; }
+.flex { display: flex; gap: 10px; flex-wrap: wrap; }
+.flex > div { flex: 1; min-width: 250px; }
 </style>
 </head>
 <body>
 <div class="container">
+  <h1>Great Scholars Portal</h1>
+  
+  <div id="loginSection">
+    <h2>Login</h2>
+    <select id="role" onchange="login()">
+      <option value="">Select Role</option>
+      <option value="Admin">Admin</option>
+      <option value="Student">Student</option>
+    </select>
 
-  <div id="authPage">
-    <img src="logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/80'">
-    <h1>Great Scholars Portal</h1>
-    <div id="authForms">
-      <div id="loginForm">
-        <h3>Login</h3>
-        <select id="loginRole">
-          <option value="">Select Role</option>
-          <option value="Student">Student</option>
-          <option value="Teacher">Teacher</option>
-          <option value="Admin">Admin</option>
-        </select>
-        <select id="loginClass" class="hidden">
-          <option value="">Select Class</option>
-          <option value="JSS1">JSS1</option>
-          <option value="JSS2">JSS2</option>
-          <option value="JSS3">JSS3</option>
-          <option value="SSS1">SSS1</option>
-          <option value="SSS2">SSS2</option>
-          <option value="SSS3">SSS3</option>
-        </select>
-        <input type="text" id="loginUsername" placeholder="Username">
-        <input type="password" id="loginPassword" class="hidden" placeholder="Password">
-        <button onclick="login()">Login</button>
-        <p style="text-align:center; margin-top:10px;">No account? <a href="#" onclick="showRegister()">Register</a></p>
-      </div>
+    <div id="adminLogin" class="hidden">
+      <input type="text" id="adminUser" placeholder="Username">
+      <input type="password" id="adminPass" placeholder="Password">
+      <button onclick="adminLogin()">Login</button>
+    </div>
 
-      <div id="registerForm" class="hidden">
-        <h3>Register</h3>
-        <select id="regRole">
-          <option value="">Select Role</option>
-          <option value="Student">Student</option>
-          <option value="Teacher">Teacher</option>
-        </select>
-        <select id="regClass" class="hidden">
-          <option value="">Select Class</option>
-          <option value="JSS1">JSS1</option>
-          <option value="JSS2">JSS2</option>
-          <option value="JSS3">JSS3</option>
-          <option value="SSS1">SSS1</option>
-          <option value="SSS2">SSS2</option>
-          <option value="SSS3">SSS3</option>
-        </select>
-        <input type="text" id="regUsername" placeholder="Username">
-        <input type="password" id="regPassword" class="hidden" placeholder="Create Password">
-        <button onclick="register()">Register</button>
-        <p style="text-align:center; margin-top:10px;">Have account? <a href="#" onclick="showLogin()">Login</a></p>
-      </div>
+    <div id="studentLogin" class="hidden">
+      <select id="studentClass"></select>
+      <select id="studentName"></select>
+      <input type="password" id="studentPasscode" placeholder="Passcode">
+      <button onclick="studentLogin()">Login</button>
     </div>
   </div>
 
   <div id="dashboard" class="hidden">
-    <div class="header-bar">
-      <h2 id="welcomeText"></h2>
-      <div>
-        <button class="btn-gray" onclick="goBack()">← Back</button>
-        <button class="btn-red" onclick="logout()">Logout</button>
+    <button class="logout" onclick="logout()">Logout</button>
+    
+    <div id="adminPanel" class="hidden">
+      <h2>Admin Panel</h2>
+      
+      <div class="flex">
+        <div class="admin-card">
+          <h3>Add Student</h3>
+          <select id="newStudentClass"></select>
+          <input type="text" id="newStudentName" placeholder="Student Full Name">
+          <input type="text" id="newStudentPasscode" placeholder="4-digit Passcode">
+          <button onclick="addStudent()">Add Student</button>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Add Subject</h3>
+          <input type="text" id="newSubject" placeholder="Subject Name">
+          <button onclick="addSubject()">Add Subject</button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="studentPanel" class="hidden">
+      <h2>Student Dashboard</h2>
+      <div id="results"></div>
+      <div id="stories">
+        <h3>Stories</h3>
+        <select id="storyCategory" onchange="loadStories()">
+          <option value="">Select Subject</option>
+          <option value="Nigerian History">Nigerian History</option>
+        </select>
+        <div id="storiesList"></div>
       </div>
     </div>
 
-    <div class="tab-nav">
-      <div id="tab-assignments" onclick="switchTab('assignments')">Assignments</div>
-      <div id="tab-results" onclick="switchTab('results')">My Results</div>
-      <div id="tab-stories" onclick="switchTab('stories')">Stories</div>
-    </div>
-
-    <div id="content-assignments" class="hidden">
-      <h3>Your Assignments</h3>
-      <div id="assignmentsList">No assignments yet.</div>
-    </div>
-
-    <div id="content-results" class="hidden">
-      <h3>Your Results</h3>
-      <div id="resultsList">No results yet.</div>
-    </div>
-
-    <div id="content-stories" class="hidden">
-      <h3>Read Stories</h3>
-      <select id="storyCategory" onchange="loadStories()">
-        <option value="">Select Subject</option>
-        <option value="Nigerian History">Nigerian History</option>
-        <option value="Mathematics">Mathematics</option>
-        <option value="English">English</option>
-        <option value="Science">Science</option>
-      </select>
-      <div id="storiesList"></div>
-    </div>
+    <hr>
+    <div id="assignmentSection"></div>
   </div>
 </div>
 
 <script>
-const STORAGE_KEY = "greatScholarsDB";
-let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { users:[], assignments:[], results:[] };
 let currentUser = null;
+const classes = ["Basic 1", "Basic 2", "Basic 3", "Basic 4", "Basic 5", "Basic 6", "JSS 1", "JSS 2", "JSS 3", "SSS 1", "SSS 2", "SSS 3"];
+let subjects = ["Maths", "English", "Basic Science", "Social Studies", "Nigerian History", "Civic Education", "Agricultural Science", "Computer Studies", "Prevocational Studies", "CCA"];
+
+const db = {
+  students: [
+    {username: "Asikhia Diamond", passcode: "4821", class: "Basic 6"},
+    {username: "Ogedengbe Success", passcode: "7394", class: "Basic 6"},
+    {username: "Mbah Favour", passcode: "5610", class: "Basic 6"},
+    {username: "Odion Praise", passcode: "9283", class: "Basic 6"},
+    {username: "Omosigho Trinity", passcode: "3746", class: "Basic 6"},
+    {username: "Igbinoba Osasenaga", passcode: "8152", class: "Basic 6"},
+    {username: "Sumape Miracle", passcode: "6409", class: "Basic 6"},
+    {username: "Alo Chinonso", passcode: "2974", class: "Basic 6"},
+    {username: "Ifada Sonia", passcode: "6831", class: "Basic 6"},
+    {username: "Ike Favour", passcode: "1507", class: "Basic 6"},
+    {username: "Aigbe God's Time", passcode: "9462", class: "Basic 6"},
+    {username: "Isioma Great Honour", passcode: "3728", class: "Basic 6"},
+    {username: "Abu Fadilat", passcode: "5890", class: "Basic 6"},
+    {username: "Edet Rose", passcode: "7241", class: "Basic 6"},
+    {username: "Erhun George", passcode: "0365", class: "Basic 6"}
+  ],
+  results: [],
+  fees: [],
+  assignments: [],
+  submissions: []
+};
 
 const stories = {
   "Nigerian History": [
-    {
-      title: "The Nigerian Civil War (1967-1970)",
-      content: "The Nigerian Civil War, also called the Biafran War, started on July 6, 1967 when the southeastern region declared independence as the Republic of Biafra. The war was caused by ethnic tension, political instability, and the 1966 coups. It lasted 30 months and ended on January 15, 1970 when Biafra surrendered. The war caused over 1 million deaths, mostly from starvation and disease."
-    },
-    {
-      title: "The First Republic (1963-1966)",
-      content: "Nigeria became a republic on October 1, 1963, cutting ties with the British monarchy. Dr. Nnamdi Azikiwe became the first President, and Sir Abubakar Tafawa Balewa remained Prime Minister. This period was marked by parliamentary democracy but also political rivalry and regional tension. The First Republic ended with the military coup of January 15, 1966."
-    },
-    {
-      title: "The Second Republic (1979-1983)",
-      content: "After 13 years of military rule, Nigeria returned to civilian rule in 1979. Shehu Shagari of the National Party of Nigeria (NPN) was elected President under the new presidential system. The Second Republic focused on economic development and the 'Green Revolution' but faced corruption and economic problems. It was ended by a military coup on December 31, 1983 led by General Muhammadu Buhari."
-    },
-    {
-      title: "Past Nigerian Leaders: Civilian & Military",
-      content: "Nigeria has had both military and civilian leaders since independence in 1960. Military leaders include General Yakubu Gowon (1966-1975), General Olusegun Obasanjo (1976-1979), General Ibrahim Babangida (1985-1993), and General Sani Abacha (1993-1998). Civilian leaders include Dr. Nnamdi Azikiwe, Sir Abubakar Tafawa Balewa, Alhaji Shehu Shagari, and from 1999 onwards, Olusegun Obasanjo, Umaru Yar'Adua, Goodluck Jonathan, Muhammadu Buhari, and Bola Tinubu."
-    }
-  ],
-  "Mathematics": [
-    { title:"Algebra Basics", content:"Algebra uses letters to represent numbers. Example: If x+5=10, then x=5." },
-    { title:"Fractions", content:"A fraction represents part of a whole. 1/2 means one out of two equal parts." }
-  ],
-  "English": [
-    { title:"Parts of Speech", content:"The 8 parts of speech are noun, pronoun, verb, adjective, adverb, preposition, conjunction, and interjection." },
-    { title:"Tenses", content:"Tenses show the time of an action: past, present, and future." }
-  ],
-  "Science": [
-    { title:"The Water Cycle", content:"Water evaporates, forms clouds, condenses, and falls as rain in a continuous cycle." },
-    { title:"Photosynthesis", content:"Plants use sunlight, water, and CO2 to make food and release oxygen." }
+    {title: "Nigerian Civil War", content: "The Nigerian Civil War lasted from 1967 to 1970."},
+    {title: "First Republic", content: "Nigeria gained independence in 1960 and became a republic in 1963."},
+    {title: "Second Republic", content: "The Second Republic ran from 1979 to 1983."},
+    {title: "Past Leaders", content: "Nigeria has had many leaders since independence."}
   ]
 };
 
-function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
-
-function showRegister() {
-  document.getElementById('loginForm').classList.add('hidden');
-  document.getElementById('registerForm').classList.remove('hidden');
-}
-function showLogin() {
-  document.getElementById('registerForm').classList.add('hidden');
-  document.getElementById('loginForm').classList.remove('hidden');
-}
-
-document.getElementById('loginRole').addEventListener('change', function() {
-  document.getElementById('loginClass').classList.toggle('hidden', this.value!== 'Student');
-  document.getElementById('loginPassword').classList.toggle('hidden', this.value === 'Student');
-});
-document.getElementById('regRole').addEventListener('change', function() {
-  document.getElementById('regClass').classList.toggle('hidden', this.value!== 'Student');
-  document.getElementById('regPassword').classList.toggle('hidden', this.value === 'Student');
-});
-
-function register() {
-  const role = document.getElementById('regRole').value;
-  const username = document.getElementById('regUsername').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const classVal = document.getElementById('regClass').value;
-
-  if(!role ||!username) return alert("Fill all required fields");
-  if(role === 'Student' &&!classVal) return alert("Select class for student");
-  if(role!== 'Student' &&!password) return alert("Create a password");
-
-  if(db.users.find(u => u.username === username)) return alert("Username already exists");
-
-  db.users.push({ role, username, password, class: classVal });
-  saveDB();
-  alert("Registration successful! Login now.");
-  showLogin();
-}
-
 function login() {
-  const role = document.getElementById('loginRole').value;
-  const username = document.getElementById('loginUsername').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const classVal = document.getElementById('loginClass').value;
-
-  if(!role ||!username) return alert("Fill all required fields");
-
-  let user;
-  if(role === 'Student') {
-    user = db.users.find(u => u.role==='Student' && u.username===username && u.class===classVal);
-  } else {
-    user = db.users.find(u => u.role===role && u.username===username && u.password===password);
+  const role = document.getElementById('role').value;
+  if(role==='Admin') {
+    document.getElementById('adminLogin').classList.remove('hidden');
+    document.getElementById('studentLogin').classList.add('hidden');
+  } else if(role==='Student') {
+    document.getElementById('studentLogin').classList.remove('hidden');
+    document.getElementById('adminLogin').classList.add('hidden');
+    
+    const classSel = document.getElementById('studentClass');
+    classSel.innerHTML = '<option value="">Select Class</option>' + 
+      classes.map(c => `<option value="${c}">${c}</option>`).join('');
+    
+    classSel.onchange = function() {
+      const selectedClass = this.value;
+      const studentSel = document.getElementById('studentName');
+      studentSel.innerHTML = '<option value="">Select Name</option>';
+      
+      if(selectedClass) {
+        const studentsInClass = db.students.filter(s => s.class === selectedClass);
+        studentSel.innerHTML += studentsInClass.map(s => 
+          `<option value="${s.username}">${s.username}</option>`
+        ).join('');
+      }
+    };
   }
+}
 
-  if(!user) return alert("Invalid login details");
+function adminLogin() {
+  const user = document.getElementById('adminUser').value;
+  const pass = document.getElementById('adminPass').value;
+  if(user==='admin' && pass==='admin123') {
+    currentUser = {username: 'admin', role: 'Admin'};
+    showDashboard();
+  } else {
+    alert('Invalid admin credentials');
+  }
+}
 
-  currentUser = user;
-  document.getElementById('authPage').classList.add('hidden');
+function studentLogin() {
+  const username = document.getElementById('studentName').value;
+  const passcode = document.getElementById('studentPasscode').value;
+  const user = db.students.find(s => s.username===username && s.passcode===passcode);
+  if(user) {
+    currentUser = user;
+    showDashboard();
+  } else {
+    alert('Invalid name or passcode');
+  }
+}
+
+function showDashboard() {
+  document.getElementById('loginSection').classList.add('hidden');
   document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('welcomeText').innerText = `Welcome, ${user.username}`;
-  switchTab('assignments');
+  
+  if(currentUser.role==='Admin') {
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadAdminForms();
+    loadTeacherAssignments();
+  } else {
+    document.getElementById('studentPanel').classList.remove('hidden');
+    loadResults();
+    loadStudentAssignments();
+  }
+}
+
+function loadAdminForms() {
+  document.getElementById('newStudentClass').innerHTML = '<option value="">Select Class</option>' + 
+    classes.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function addStudent() {
+  const cls = document.getElementById('newStudentClass').value;
+  const name = document.getElementById('newStudentName').value.trim();
+  const pass = document.getElementById('newStudentPasscode').value.trim();
+  
+  if(!cls || !name || !pass) {
+    alert('Fill all fields');
+    return;
+  }
+  if(pass.length !== 4 || isNaN(pass)) {
+    alert('Passcode must be 4 digits');
+    return;
+  }
+  if(db.students.find(s => s.username === name)) {
+    alert('Student already exists');
+    return;
+  }
+  
+  db.students.push({username: name, passcode: pass, class: cls});
+  document.getElementById('newStudentName').value = '';
+  document.getElementById('newStudentPasscode').value = '';
+  alert('Student added successfully!');
+}
+
+function addSubject() {
+  const subj = document.getElementById('newSubject').value.trim();
+  if(!subj) {
+    alert('Enter a subject name');
+    return;
+  }
+  if(subjects.includes(subj)) {
+    alert('Subject already exists');
+    return;
+  }
+  
+  subjects.push(subj);
+  document.getElementById('newSubject').value = '';
+  alert('Subject added! It will show in the assignment dropdown now.');
+  loadTeacherAssignments();
 }
 
 function logout() {
   currentUser = null;
+  document.getElementById('loginSection').classList.remove('hidden');
   document.getElementById('dashboard').classList.add('hidden');
-  document.getElementById('authPage').classList.remove('hidden');
-  document.getElementById('loginUsername').value = '';
-  document.getElementById('loginPassword').value = '';
-}
-
-function goBack() {
-  document.getElementById('dashboard').classList.add('hidden');
-  document.getElementById('authPage').classList.remove('hidden');
-}
-
-function switchTab(tab) {
-  ['assignments','results','stories'].forEach(t => {
-    document.getElementById(`tab-${t}`).classList.remove('active');
-    document.getElementById(`content-${t}`).classList.add('hidden');
-  });
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  document.getElementById(`content-${tab}`).classList.remove('hidden');
-
-  if(tab==='assignments') loadAssignments();
-  if(tab==='results') loadResults();
-}
-
-function loadAssignments() {
-  const list = document.getElementById('assignmentsList');
-  if(currentUser.role==='Student') {
-    const userAssignments = db.assignments.filter(a => a.class===currentUser.class);
-    list.innerHTML = userAssignments.length? userAssignments.map(a =>
-      `<div class="story-card"><h3>${a.subject}</h3><p>${a.task}</p></div>`
-    ).join('') : "No assignments yet.";
-  } else {
-    list.innerHTML = "<p>Teachers/Admins can add assignments in the admin panel.</p>";
-  }
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.getElementById('studentPanel').classList.add('hidden');
 }
 
 function loadResults() {
-  const list = document.getElementById('resultsList');
+  const list = document.getElementById('results');
   if(currentUser.role==='Student') {
     const userResults = db.results.filter(r => r.username===currentUser.username);
     list.innerHTML = userResults.length?
@@ -280,6 +268,165 @@ function loadStories() {
   list.innerHTML = catStories.length? catStories.map(s =>
     `<div class="story-card"><h3>${s.title}</h3><p>${s.content}</p></div>`
   ).join('') : "<p>No stories available for this subject yet.</p>";
+}
+
+function loadTeacherAssignments() {
+  const section = document.getElementById('assignmentSection');
+  section.innerHTML = `
+    <h3>Post Assignment</h3>
+    <select id="assignClass">
+      <option value="">Select Class</option>
+      ${classes.map(c => `<option value="${c}">${c}</option>`).join('')}
+    </select>
+    <select id="assignSubject">
+      <option value="">Select Subject</option>
+      ${subjects.map(s => `<option value="${s}">${s}</option>`).join('')}
+    </select>
+    <textarea id="assignQuestion" placeholder="Write the assignment question here"></textarea>
+    <button onclick="postAssignment()">Post Assignment</button>
+    
+    <h3>View Submissions</h3>
+    <select id="viewAssignSelect" onchange="showSubmissions()">
+      <option value="">Select Assignment</option>
+      ${db.assignments.map(a => `<option value="${a.id}">${a.subject} - ${a.class} - ${a.date}</option>`).join('')}
+    </select>
+    <div id="submissionsArea"></div>
+  `;
+  showTeacherAssignments();
+}
+
+function postAssignment() {
+  const cls = document.getElementById('assignClass').value;
+  const subject = document.getElementById('assignSubject').value;
+  const question = document.getElementById('assignQuestion').value;
+  
+  if(!cls || !subject || !question) {
+    alert('Fill all fields');
+    return;
+  }
+  
+  db.assignments.push({
+    id: Date.now(),
+    class: cls,
+    subject: subject,
+    question: question,
+    date: new Date().toLocaleDateString()
+  });
+  
+  document.getElementById('assignQuestion').value = '';
+  alert('Assignment posted!');
+  loadTeacherAssignments();
+}
+
+function showTeacherAssignments() {
+  if(!document.getElementById('teacherAssignments')) {
+    document.getElementById('assignmentSection').insertAdjacentHTML('beforeend', '<div id="teacherAssignments"></div>');
+  }
+  const target = document.getElementById('teacherAssignments');
+  if(db.assignments.length === 0) {
+    target.innerHTML = '<p>No assignments posted yet.</p>';
+    return;
+  }
+  target.innerHTML = db.assignments.map(a => `
+    <div class="assignment-card">
+      <strong>${a.subject} - ${a.class}</strong><br>
+      ${a.question}<br>
+      <small>${a.date}</small>
+    </div>
+  `).join('');
+}
+
+function showSubmissions() {
+  const id = document.getElementById('viewAssignSelect').value;
+  const area = document.getElementById('submissionsArea');
+  
+  if(!id) {
+    area.innerHTML = '';
+    return;
+  }
+  
+  const assignment = db.assignments.find(a => a.id == id);
+  const subs = db.submissions.filter(s => s.assignmentId == id);
+  
+  if(subs.length === 0) {
+    area.innerHTML = '<p>No submissions yet for this assignment.</p>';
+    return;
+  }
+  
+  area.innerHTML = `
+    <h4>${assignment.subject} - ${assignment.class}</h4>
+    <p><strong>Question:</strong> ${assignment.question}</p>
+    <table>
+      <tr><th>Student</th><th>Answer</th><th>Date</th></tr>
+      ${subs.map(s => `<tr><td>${s.username}</td><td>${s.answer}</td><td>${s.date}</td></tr>`).join('')}
+    </table>
+  `;
+}
+
+function loadStudentAssignments() {
+  const section = document.getElementById('assignmentSection');
+  const myAssignments = db.assignments.filter(a => a.class === currentUser.class);
+  
+  section.innerHTML = `
+    <h3>Assignments</h3>
+    <select id="assignmentSelect" onchange="showAssignment()">
+      <option value="">Select Assignment</option>
+      ${myAssignments.map(a => `<option value="${a.id}">${a.subject} - ${a.date}</option>`).join('')}
+    </select>
+    <div id="assignmentAnswerArea"></div>
+  `;
+}
+
+function showAssignment() {
+  const id = document.getElementById('assignmentSelect').value;
+  const area = document.getElementById('assignmentAnswerArea');
+  
+  if(!id) {
+    area.innerHTML = '';
+    return;
+  }
+  
+  const assignment = db.assignments.find(a => a.id == id);
+  const submitted = db.submissions.find(s => s.assignmentId == id && s.username === currentUser.username);
+  
+  if(submitted) {
+    area.innerHTML = `
+      <div class="assignment-card">
+        <strong>${assignment.subject}</strong><br>
+        ${assignment.question}<br><br>
+        <strong>Your Answer:</strong><br>
+        ${submitted.answer}
+      </div>
+    `;
+  } else {
+    area.innerHTML = `
+      <div class="assignment-card">
+        <strong>${assignment.subject}</strong><br>
+        ${assignment.question}<br><br>
+        <textarea id="studentAnswer" placeholder="Type your answer here"></textarea>
+        <button onclick="submitAnswer(${id})">Submit Answer</button>
+      </div>
+    `;
+  }
+}
+
+function submitAnswer(assignmentId) {
+  const answer = document.getElementById('studentAnswer').value;
+  if(!answer) {
+    alert('Type an answer first');
+    return;
+  }
+  
+  db.submissions.push({
+    assignmentId: assignmentId,
+    username: currentUser.username,
+    class: currentUser.class,
+    answer: answer,
+    date: new Date().toLocaleDateString()
+  });
+  
+  alert('Answer submitted!');
+  showAssignment();
 }
 </script>
 </body>
