@@ -34,24 +34,24 @@ let subjects = ["Mathematics", "English", "Prevocational Studies", "CCA"];
 let assignments = [];
 let stories = {
   "Nigerian History": [
-  {
-    title: "The story of Moremi and her sacrifice for Ile-Ife.",
-    content: "Moremi was a brave queen of Ile-Ife who risked her life to discover the secret of the Igbo people who were attacking her kingdom. She dressed as a slave, got captured, and learned that they were spirits covered in raffia. She escaped and told her people, who then defeated them. Afterward, she sacrificed her only son as promised to the gods for victory."
-  },
-  {
-    title: "How the River Niger got its name.",
-    content: "The name 'Niger' comes from the Latin word 'niger' meaning black. Early European explorers saw the dark water of the river and called it River Niger. The river is one of the longest in Africa and is very important for trade, farming, and transportation in Nigeria."
-  },
-  {
-    title: "The Nigerian Civil War 1967-1970 - causes and effects.",
-    content: "The Nigerian Civil War, also called the Biafran War, happened because of ethnic tensions, political disagreements, and control of oil resources. It lasted from 1967 to 1970 between the Nigerian government and the secessionist state of Biafra. Over a million people died, mostly from hunger and disease. The war ended with Biafra rejoining Nigeria."
-  },
-  {
-    title: "The First Republic 1963-1966 and the Second Republic 1979-1983.",
-    content: "The First Republic ran from 1963 to 1966 under Prime Minister Tafawa Balewa and President Nnamdi Azikiwe. It ended with a military coup. The Second Republic ran from 1979 to 1983 under President Shehu Shagari. It was Nigeria’s second attempt at civilian rule but also ended with a military coup due to corruption and economic problems."
-  }
-]
-  };
+    {
+      title: "The story of Moremi and her sacrifice for Ile-Ife.",
+      content: "Moremi was a brave queen of Ile-Ife who risked her life to discover the secret of the Igbo people who were attacking her kingdom. She dressed as a slave, got captured, and learned that they were spirits covered in raffia. She escaped and told her people, who then defeated them. Afterward, she sacrificed her only son as promised to the gods for victory."
+    },
+    {
+      title: "How the River Niger got its name.",
+      content: "The name 'Niger' comes from the Latin word 'niger' meaning black. Early European explorers saw the dark water of the river and called it River Niger. The river is one of the longest in Africa and is very important for trade, farming, and transportation in Nigeria."
+    },
+    {
+      title: "The Nigerian Civil War 1967-1970 - causes and effects.",
+      content: "The Nigerian Civil War, also called the Biafran War, happened because of ethnic tensions, political disagreements, and control of oil resources. It lasted from 1967 to 1970 between the Nigerian government and the secessionist state of Biafra. Over a million people died, mostly from hunger and disease. The war ended with Biafra rejoining Nigeria."
+    },
+    {
+      title: "The First Republic 1963-1966 and the Second Republic 1979-1983.",
+      content: "The First Republic ran from 1963 to 1966 under Prime Minister Tafawa Balewa and President Nnamdi Azikiwe. It ended with a military coup. The Second Republic ran from 1979 to 1983 under President Shehu Shagari. It was Nigeria’s second attempt at civilian rule but also ended with a military coup due to corruption and economic problems."
+    }
+  ]
+};
 const adminUser = "admin";
 const adminPass = "admin123";
 
@@ -190,8 +190,8 @@ function loadAssignments() {
 function loadStory() {
   const subj = document.getElementById("storySubject").value;
   const content = document.getElementById("storyContent");
-  if (stories[subj]) {
-    content.innerHTML = stories[subj].map(s =>
+  if (stories) {
+    content.innerHTML = stories.map(s =>
       `<div class="story"><h3>${s.title}</h3><p>${s.content}</p></div>`
     ).join("");
   } else {
