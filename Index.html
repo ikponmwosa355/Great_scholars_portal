@@ -1,0 +1,794 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Great Scholars Portal</title>
+
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #45a049;
+      --danger: #f44336;
+      --accent: #2196F3;
+      --accent-dark: #1976D2;
+      --success: #4CAF50;
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --text: #333;
+      --muted: #666;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      background: linear-gradient(135deg, #e3f2fd 0%, #f5f7fa 100%);
+      color: var(--text);
+    }
+    .hidden { display: none; }
+    input, select, button, textarea {
+      padding: 12px;
+      margin: 8px 0;
+      width: 100%;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    button {
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+    button:hover { background: var(--primary-dark); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-accent { background: var(--accent); }
+    .btn-accent:hover { background: var(--accent-dark); }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #d32f2f; }
+    .card {
+      border-left: 5px solid var(--accent);
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+    h2, h3 {
+      color: var(--accent-dark);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+      margin-top: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .section {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 15px 0;
+      border-top: 4px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0;
+      width: auto;
+    }
+    .back-btn:hover { color: var(--accent-dark); }
+    .msg-box {
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      border: 1px solid #bbdefb;
+    }
+    .msg.teacher { background: #bbdefb; align-self: flex-end; margin-left: auto; }
+    .msg.student { background: #c8e6c9; }
+    .row { display: flex; gap: 10px; }
+    .row input { flex: 1; }
+    .row button { width: auto; }
+    details {
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      background: white;
+    }
+    summary {
+      font-weight: bold;
+      font-size: 17px;
+      cursor: pointer;
+      color: #333;
+    }
+    .answer {
+      margin-top: 8px;
+      padding: 8px;
+      background: #e8f5e9;
+      border-radius: 5px;
+      display: none;
+    }
+    .success-msg {
+      display: none;
+      color: green;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .action-btns { display: flex; gap: 8px; margin-top: 8px; }
+    .action-btns button { width: auto; padding: 6px 12px; font-size: 13px; }
+    
+    .quiz-option {
+      display: block;
+      padding: 12px;
+      margin: 8px 0;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .quiz-option:hover { border-color: var(--accent); }
+    .quiz-option.correct { border-color: var(--success); background: #e8f5e9; }
+    .quiz-option.wrong { border-color: var(--danger); background: #ffebee; }
+    .feedback {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .feedback.correct { color: var(--success); }
+    .feedback.wrong { color: var(--danger); }
+    .progress-bar {
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .score-badge {
+      background: var(--primary);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<div id="view-login">
+  <div class="section">
+    <h2>Student Login</h2>
+    <select id="studentSelect">
+      <option value="">Select your name</option>
+    </select>
+    <input type="password" id="studentPass" placeholder="Enter passcode">
+    <button class="btn-accent" onclick="studentLogin()">Login</button>
+  </div>
+
+  <div class="section">
+    <h2>Teacher Login</h2>
+    <input type="password" id="teacherPass" placeholder="Teacher passcode">
+    <button onclick="teacherLogin()">Login</button>
+  </div>
+</div>
+
+<div id="view-student" class="hidden">
+  <div class="header">
+    <button class="back-btn" onclick="logout()">← Logout</button>
+    <h2 id="studentWelcome"></h2>
+  </div>
+
+  <div class="section">
+    <h3>Available Assignments</h3>
+    <select id="subjectFilterStudent" onchange="loadStudentData()">
+      <option value="">All Subjects</option>
+      <option value="Math">Math</option>
+      <option value="Science">Science</option>
+      <option value="English">English</option>
+      <option value="History">History</option>
+    </select>
+    <div id="assignmentsList"><p>Loading...</p></div>
+  </div>
+
+  <div class="section">
+    <h3>Quick Quiz</h3>
+    <select id="subjectSelect" onchange="startSubjectQuiz()">
+      <option value="">Select a subject</option>
+      <option value="maths">Mathematics</option>
+      <option value="english">English</option>
+      <option value="science">Science</option>
+      <option value="basicScience">Basic Science</option>
+      <option value="history">Nigeria History</option>
+    </select>
+
+    <div id="quizArea" class="hidden">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div id="questionBox"></div>
+      <div id="quizResult" class="hidden"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Submit Assignment</h3>
+    <select id="assignSelect"></select>
+    <textarea id="submissionText" placeholder="Type your answer here" rows="5"></textarea>
+    <button onclick="submitAssignment()">Submit</button>
+  </div>
+
+  <div class="section">
+    <h3>My Submissions & Quiz Results</h3>
+    <div id="mySubmissions"><p>No submissions yet</p></div>
+  </div>
+
+  <div class="section">
+    <h3>Message Teacher</h3>
+    <div id="studentMsgBox" class="msg-box"></div>
+    <div class="row">
+      <input type="text" id="studentMsgInput" placeholder="Type message...">
+      <button class="btn-accent" onclick="sendMessage('student')">Send</button>
+    </div>
+  </div>
+</div>
+<div id="view-teacher" class="hidden">
+  <div class="header">
+    <button class="back-btn" onclick="logout()">← Logout</button>
+    <h2>Teacher Dashboard</h2>
+  </div>
+
+  <div class="section">
+    <h3>Post New Assignment</h3>
+    <select id="assignSubject">
+      <option value="Math">Math</option>
+      <option value="Science">Science</option>
+      <option value="English">English</option>
+      <option value="History">History</option>
+    </select>
+    <input type="text" id="assignTitle" placeholder="Assignment title">
+    <textarea id="assignDesc" placeholder="Description" rows="3"></textarea>
+    <button onclick="postAssignment()">Post Assignment</button>
+    <div id="teacherMsg" class="success-msg">✓ Assignment posted successfully</div>
+  </div>
+
+  <div class="section">
+    <h3>Add New Student</h3>
+    <input type="text" id="newStudentName" placeholder="Student full name">
+    <input type="text" id="newStudentPass" placeholder="Set passcode for student">
+    <button onclick="addStudent()">Add Student</button>
+  </div>
+
+  <div class="section">
+    <h3>Manage Students</h3>
+    <div id="studentList"><p>Loading...</p></div>
+  </div>
+
+  <div class="section">
+    <h3>All Submissions & Quiz Results</h3>
+    <div id="allSubmissions"><p>Loading...</p></div>
+  </div>
+
+  <div class="section">
+    <h3>Message Students</h3>
+    <select id="msgStudentSelect"><option value="">Select student</option></select>
+    <div id="teacherMsgBox" class="msg-box"></div>
+    <div class="row">
+      <input type="text" id="teacherMsgInput" placeholder="Type message...">
+      <button class="btn-accent" onclick="sendMessage('teacher')">Send</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🧠 Learning Hub</h2>
+  <details>
+    <summary>🧠 Brain Gym - Riddles & Brain Teasers</summary>
+    <div class="content">
+      <select id="brainType" onchange="showBrainQ()">
+        <option value="">Choose a category</option>
+        <option value="riddle">Riddles</option>
+        <option value="idiom">Idioms</option>
+        <option value="brainteaser">Brain Teasers</option>
+      </select>
+      <div id="brainQ"></div>
+      <button id="brainBtn" onclick="showBrainA()" style="display:none;">Show Answer</button>
+      <div id="brainA" class="answer"></div>
+    </div>
+  </details>
+  <details>
+    <summary>📝 Daily Spelling Bee</summary>
+    <div class="content" id="spelling"></div>
+  </details>
+  <details>
+    <summary>➕ Quick Maths Challenge</summary>
+    <div class="content" id="maths"></div>
+  </details>
+  <details>
+    <summary>📘 English Grammar Drills</summary>
+    <div class="content" id="grammar"></div>
+  </details>
+  <details>
+    <summary>🔬 Science Facts Corner</summary>
+    <div class="content" id="science"></div>
+  </details>
+  <details>
+    <summary>🇳🇬 Civic & Social Studies</summary>
+    <div class="content" id="civic"></div>
+  </details>
+  <details>
+    <summary>📚 Past Question Bank</summary>
+    <div class="content">
+      <select onchange="showPastQ(this.value)">
+        <option value="">Choose Subject</option>
+        <option value="maths">Mathematics</option>
+        <option value="english">English</option>
+      </select>
+      <div id="pastQ"></div>
+    </div>
+  </details>
+  <details>
+    <summary>📖 Story Time</summary>
+    <div class="content" id="story"></div>
+  </details>
+  <details>
+    <summary>✏️ Homework Help</summary>
+    <div class="content">
+      <p><b>Example: Fractions</b><br>
+      Q: What is 1/2 + 1/4?<br>
+      Step 1: Find common denominator 4<br>
+      Step 2: 1/2 = 2/4<br>
+      Step 3: 2/4 + 1/4 = 3/4</p>
+    </div>
+  </details>
+  <details>
+    <summary>📢 Class Notice Board</summary>
+    <div class="content" id="noticeBoard">
+      <p><b>Assignment Due:</b> Maths Worksheet 5 - Friday<br>
+      <b>Exam Date:</b> English Test - 15th Oct<br>
+      <b>Notice:</b> Remember to bring your textbooks daily</p>
+    </div>
+  </details>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBhkP8E0ST4DE7-kBOdGXs8frhvSmIKCRI",
+  authDomain: "basic-six-online-assignment.firebaseapp.com",
+  projectId: "basic-six-online-assignment",
+  storageBucket: "basic-six-online-assignment.firebasestorage.app",
+  messagingSenderId: "219827342901",
+  appId: "1:219827342901:web:1906ceed79c320ee2e6b7c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let unsubscribeMessages = null;
+
+const quizBank = {
+  maths: [
+    {q: "What is 12 × 12?", opts: ["122", "144", "132", "124"], ans: 1},
+    {q: "What is 100 ÷ 4?", opts: ["20", "25", "30", "40"], ans: 1},
+    {q: "What is 7 × 8?", opts: ["54", "56", "58", "60"], ans: 1},
+    {q: "What is 15% of 200?", opts: ["20", "25", "30", "35"], ans: 2},
+    {q: "What is the next prime number after 11?", opts: ["12", "13", "14", "15"], ans: 1},
+    {q: "What is 9²?", opts: ["81", "72", "99", "18"], ans: 0},
+    {q: "If x + 5 = 12, what is x?", opts: ["5", "6", "7", "8"], ans: 2},
+    {q: "What is 3/4 of 20?", opts: ["12", "15", "16", "18"], ans: 1},
+    {q: "What is the area of a rectangle 5cm by 4cm?", opts: ["9cm²", "18cm²", "20cm²", "25cm²"], ans: 2},
+    {q: "What is 0.5 as a fraction?", opts: ["1/2", "1/4", "2/5", "1/5"], ans: 0},
+    {q: "What is 45 + 37?", opts: ["72", "82", "92", "80"], ans: 1},
+    {q: "What is 96 ÷ 12?", opts: ["6", "7", "8", "9"], ans: 2},
+    {q: "What is the value of π to 2 decimal places?", opts: ["3.14", "3.15", "3.16", "3.13"], ans: 0},
+    {q: "What is 2³?", opts: ["6", "8", "9", "4"], ans: 1},
+    {q: "What is the HCF of 12 and 18?", opts: ["3", "6", "9", "12"], ans: 1},
+    {q: "What is 25% of 80?", opts: ["15", "20", "25", "30"], ans: 1},
+    {q: "What is 144 ÷ 12?", opts: ["11", "12", "13", "14"], ans: 1},
+    {q: "What is 7.5 + 2.5?", opts: ["9", "10", "10.5", "11"], ans: 1},
+    {q: "What is the perimeter of a square with side 6cm?", opts: ["12cm", "18cm", "24cm", "36cm"], ans: 2},
+    {q: "What is 1/2 + 1/4?", opts: ["1/6", "2/6", "3/4", "2/4"], ans: 2}
+  ],
+  english: [
+    {q: "Synonym for 'Happy' is?", opts: ["Sad", "Joyful", "Angry", "Tired"], ans: 1},
+    {q: "Antonym for 'Hot' is?", opts: ["Warm", "Cold", "Cool", "Boiling"], ans: 1},
+    {q: "Which word is a noun?", opts: ["Run", "Quick", "Dog", "Beautiful"], ans: 2},
+    {q: "Choose the correct spelling:", opts: ["Accomodate", "Accommodate", "Acommodate", "Accomodete"], ans: 1},
+    {q: "What is the plural of 'Child'?", opts: ["Childs", "Children", "Childes", "Child"], ans: 1},
+    {q: "Which sentence is correct?", opts: ["She go to school", "She goes to school", "She going to school", "She gone to school"], ans: 1},
+    {q: "What type of word is 'quickly'?", opts: ["Noun", "Verb", "Adverb", "Adjective"], ans: 2},
+    {q: "Past tense of 'Go' is?", opts: ["Goed", "Went", "Gone", "Going"], ans: 1},
+    {q: "Opposite of 'Begin' is?", opts: ["Start", "Continue", "End", "Middle"], ans: 2},
+    {q: "Which is a vowel?", opts: ["B", "C", "A", "D"], ans: 2},
+    {q: "Synonym for 'Big' is?", opts: ["Small", "Large", "Tiny", "Short"], ans: 1},
+    {q: "What is the past participle of 'Eat'?", opts: ["Eated", "Eating", "Eaten", "Eat"], ans: 2},
+    {q: "Which word means 'very small'?", opts: ["Huge", "Tiny", "Large", "Big"], ans: 1},
+    {q: "Choose the correct article: ___ apple", opts: ["A", "An", "The", "No article"], ans: 1},
+    {q: "What is a group of lions called?", opts: ["Herd", "Flock", "Pride", "Pack"], ans: 2},
+    {q: "Which word is an adjective?", opts: ["Run", "Beautiful", "Quickly", "Dog"], ans: 1},
+    {q: "Opposite of 'Day' is?", opts: ["Morning", "Evening", "Night", "Afternoon"], ans: 2},
+    {q: "What is the plural of 'Mouse'?", opts: ["Mouses", "Mice", "Mouse", "Mices"], ans: 1},
+    {q: "Which sentence is a question?", opts: ["I am going", "Are you going?", "She is going", "They go"], ans: 1},
+    {q: "Synonym for 'Start' is?", opts: ["Stop", "Begin", "End", "Finish"], ans: 1}
+  ],
+  science: [
+    {q: "Water boils at what temperature?", opts: ["50°C", "100°C", "0°C", "212°C"], ans: 1},
+    {q: "What gas do plants absorb?", opts: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], ans: 2},
+    {q: "What is H2O commonly called?", opts: ["Salt", "Water", "Oxygen", "Hydrogen"], ans: 1},
+    {q: "How many planets are in the Solar System?", opts: ["7", "8", "9", "10"], ans: 1},
+    {q: "What force pulls objects to Earth?", opts: ["Magnetism", "Friction", "Gravity", "Pressure"], ans: 2},
+    {q: "What do we call animals that eat both plants and meat?", opts: ["Herbivores", "Carnivores", "Omnivores", "Insectivores"], ans: 2},
+    {q: "What is the largest organ in the human body?", opts: ["Heart", "Brain", "Skin", "Liver"], ans: 2},
+    {q: "What is the chemical symbol for Gold?", opts: ["Go", "Au", "Ag", "Gd"], ans: 1},
+    {q: "What part of the plant makes food?", opts: ["Root", "Stem", "Leaf", "Flower"], ans: 2},
+    {q: "What state is ice?", opts: ["Liquid", "Gas", "Solid", "Plasma"], ans: 2},
+    {q: "What instrument measures temperature?", opts: ["Barometer", "Thermometer", "Hygrometer", "Speedometer"], ans: 1},
+    {q: "What do bees make?", opts: ["Milk", "Honey", "Wax", "Sugar"], ans: 1},
+    {q: "How many bones does an adult human have?", opts: ["206", "180", "220", "150"], ans: 0},
+    {q: "What gas do we breathe out?", opts: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"], ans: 2},
+    {q: "What is the hardest natural substance?", opts: ["Iron", "Diamond", "Gold", "Platinum"], ans: 1},
+    {q: "What color does blue and yellow make?", opts: ["Orange", "Green", "Purple", "Brown"], ans: 1},
+    {q: "What is the speed of light approximately?", opts: ["300,000 km/s", "150,000 km/s", "500,000 km/s", "100,000 km/s"], ans: 0},
+    {q: "Which blood cells fight infection?", opts: ["Red blood cells", "White blood cells", "Platelets", "Plasma"], ans: 1},
+    {q: "What is the study of living things called?", opts: ["Chemistry", "Physics", "Biology", "Geology"], ans: 2},
+    {q: "What do plants need for photosynthesis?", opts: ["Sunlight, CO2, Water", "Only water", "Only sunlight", "Soil and air"], ans: 0}
+  ],
+  basicScience: [
+    {q: "Which part of the plant absorbs water?", opts: ["Leaf", "Stem", "Root", "Flower"], ans: 2},
+    {q: "What do we use to see?", opts: ["Ears", "Eyes", "Nose", "Skin"], ans: 1},
+    {q: "Which animal barks?", opts: ["Cat", "Dog", "Cow", "Goat"], ans: 1},
+    {q: "What gives us light during the day?", opts: ["Moon", "Star", "Sun", "Lamp"], ans: 2},
+    {q: "How many legs does a spider have?", opts: ["6", "8", "10", "12"], ans: 1},
+    {q: "What is used to measure length?", opts: ["Clock", "Scale", "Ruler", "Thermometer"], ans: 2},
+    {q: "Which of these is a liquid?", opts: ["Stone", "Water", "Wood", "Iron"], ans: 1},
+    {q: "What do we call baby chickens?", opts: ["Calves", "Chicks", "Pups", "Kittens"], ans: 1},
+    {q: "Which sense is for smelling?", opts: ["Sight", "Hearing", "Smell", "Touch"], ans: 2},
+    {q: "What do plants need to grow?", opts: ["Water, Sunlight, Air", "Only water", "Only sunlight", "Only air"], ans: 0},
+    {q: "Which animal lives in water?", opts: ["Lion", "Fish", "Goat", "Dog"], ans: 1},
+    {q: "What do we use to hear?", opts: ["Eyes", "Ears", "Nose", "Tongue"], ans: 1},
+    {q: "Which of these flies?", opts: ["Dog", "Bird", "Cat", "Cow"], ans: 1},
+    {q: "What color is a ripe banana?", opts: ["Green", "Red", "Yellow", "Blue"], ans: 2},
+    {q: "How many days are in a week?", opts: ["5", "6", "7", "8"], ans: 2},
+    {q: "What do we call a place where animals are kept?", opts: ["School", "Hospital", "Zoo", "Market"], ans: 2},
+    {q: "Which material is hard?", opts: ["Cotton", "Stone", "Sponge", "Cloth"], ans: 1},
+    {q: "What do we use to write on paper?", opts: ["Chalk", "Pen", "Brush", "Stick"], ans: 1},
+    {q: "Which season is hot and dry in Nigeria?", opts: ["Rainy", "Harmattan", "Winter", "Spring"], ans: 1},
+    {q: "What do we call the center of an atom?", opts: ["Electron", "Proton", "Nucleus", "Neutron"], ans: 2}
+  ],
+  history: [
+    {q: "Nigeria gained independence in which year?", opts: ["1957", "1960", "1963", "1970"], ans: 1},
+    {q: "Who was Nigeria’s first Prime Minister?", opts: ["Nnamdi Azikiwe", "Tafawa Balewa", "Obafemi Awolowo", "Yakubu Gowon"], ans: 1},
+    {q: "Which city is the capital of Nigeria?", opts: ["Lagos", "Abuja", "Kano", "Port Harcourt"], ans: 1},
+    {q: "Nigeria became a Republic in which year?", opts: ["1960", "1963", "1966", "1970"], ans: 1},
+    {q: "Who designed the Nigerian flag?", opts: ["Taiwo Akinkunmi", "Herbert Macaulay", "Fela Kuti", "Chinua Achebe"], ans: 0},
+    {q: "What are Nigeria’s colors?", opts: ["Red, White, Blue", "Green, White, Green", "Yellow, Green, Red", "Black, Green, White"], ans: 1},
+    {q: "Which river is the longest in Nigeria?", opts: ["Benue", "Niger", "Ogun", "Kaduna"], ans: 1},
+    {q: "Nigeria has how many states?", opts: ["30", "36", "37", "40"], ans: 1},
+    {q: "Who was the first military Head of State?", opts: ["Aguiyi Ironsi", "Yakubu Gowon", "Murtala Muhammed", "Olusegun Obasanjo"], ans: 0},
+    {q: "Which empire was in Northern Nigeria?", opts: ["Oyo", "Benin", "Sokoto Caliphate", "Kanem-Bornu"], ans: 2},
+    {q: "What year did Nigeria host FESTAC?", opts: ["1975", "1977", "1980", "1982"], ans: 1},
+    {q: "Who is known as 'Zik'?", opts: ["Obafemi Awolowo", "Nnamdi Azikiwe", "Ahmadu Bello", "Sardauna"], ans: 1},
+    {q: "Which state is called 'Center of Learning'?", opts: ["Oyo", "Kwara", "Kaduna", "Ondo"], ans: 1},
+    {q: "Nigeria civil war lasted from?", opts: ["1965-1968", "1967-1970", "1968-1971", "1970-1973"], ans: 1},
+    {q: "What is the Nigerian currency called?", opts: ["Cedi", "Naira", "Franc", "Dollar"], ans: 1},
+    {q: "Who was the first President of Nigeria?", opts: ["Nnamdi Azikiwe", "Tafawa Balewa", "Olusegun Obasanjo", "Shehu Shagari"], ans: 0},
+    {q: "Which tribe is mainly in the South-East?", opts: ["Hausa", "Yoruba", "Igbo", "Ijaw"], ans: 2},
+    {q: "Nigeria’s motto is?", opts: ["Unity and Faith", "Unity and Progress", "Peace and Unity", "Faith and Justice"], ans: 1},
+    {q: "Which state is known as 'Sunshine State'?", opts: ["Ondo", "Ekiti", "Osun", "Ogun"], ans: 0},
+    {q: "What is the name of Nigeria’s national anthem?", opts: ["Arise O Compatriots", "Nigeria We Hail Thee", "Land of Hope", "Our Nation Nigeria"], ans: 0}
+  ]
+};
+
+let currentSubject = null;
+let currentQIndex = 0;
+let score = 0;
+let answered = false;
+
+function showView(view) {
+  document.querySelectorAll('[id^="view-"]').forEach(div => div.classList.add('hidden'));
+  document.getElementById(`view-${view}`).classList.remove('hidden');
+}
+
+window.addEventListener('load', () => {
+  loadStudents();
+  checkAuth();
+  loadDropdownContent();
+});
+
+function checkAuth() {
+  const role = localStorage.getItem("role");
+  if (!role) { showView('login'); return; }
+  if (role === 'student') {
+    document.getElementById("studentWelcome").textContent = "Welcome, " + localStorage.getItem("studentName");
+    loadStudentData();
+    loadMessages('student');
+    showView('student');
+  }
+  if (role === 'teacher') {
+    loadTeacherData();
+    showView('teacher');
+  }
+}
+async function loadStudents() {
+  const snap = await getDocs(collection(db, "students"));
+  const select = document.getElementById("studentSelect");
+  const msgSelect = document.getElementById("msgStudentSelect");
+  select.innerHTML = '<option value="">Select your name</option>';
+  if (msgSelect) msgSelect.innerHTML = '<option value="">Select student</option>';
+  snap.forEach(doc => {
+    const data = doc.data();
+    const opt = document.createElement("option");
+    opt.value = doc.id;
+    opt.textContent = data.name;
+    select.appendChild(opt);
+    if (msgSelect) msgSelect.appendChild(opt.cloneNode(true));
+  });
+}
+
+window.studentLogin = async function() {
+  const id = document.getElementById("studentSelect").value;
+  const pass = document.getElementById("studentPass").value;
+  if (!id) return alert("Please select a student");
+  const snap = await getDocs(query(collection(db, "students"), where("__name__", "==", id)));
+  if (snap.empty) return alert("Student not found");
+  const data = snap.docs[0].data();
+  if (data.passcode === pass) {
+    localStorage.setItem("role", "student");
+    localStorage.setItem("studentId", id);
+    localStorage.setItem("studentName", data.name);
+    checkAuth();
+  } else {
+    alert("Wrong passcode");
+  }
+}
+
+window.teacherLogin = function() {
+  const pass = document.getElementById("teacherPass").value;
+  if (pass === "teacher123") {
+    localStorage.setItem("role", "teacher");
+    checkAuth();
+  } else {
+    alert("Wrong teacher passcode");
+  }
+}
+
+window.logout = function() {
+  localStorage.clear();
+  if (unsubscribeMessages) unsubscribeMessages();
+  showView('login');
+}
+
+async function loadStudentData() {
+  const subjectFilter = document.getElementById("subjectFilterStudent")?.value;
+
+  let q = collection(db, "assignments");
+  if (subjectFilter) {
+    q = query(collection(db, "assignments"), where("subject", "==", subjectFilter));
+  }
+
+  const assignSnap = await getDocs(q);
+  const assignDiv = document.getElementById("assignmentsList");
+  const assignSelect = document.getElementById("assignSelect");
+  assignDiv.innerHTML = "";
+  assignSelect.innerHTML = "";
+
+  if (assignSnap.empty) {
+    assignDiv.innerHTML = "<p>No assignments posted yet</p>";
+  } else {
+    assignSnap.forEach(doc => {
+      const data = doc.data();
+      const desc = data.desc || data.description || "";
+      assignDiv.innerHTML += `<div class="card"><strong>[${data.subject}] ${data.title}</strong><p>${desc}</p></div>`;
+      assignSelect.innerHTML += `<option value="${doc.id}">[${data.subject}] ${data.title}</option>`;
+    });
+  }
+
+  const subSnap = await getDocs(query(
+    collection(db, "submissions"),
+    where("studentId", "==", localStorage.getItem("studentId")),
+    orderBy("submittedAt", "desc")
+  ));
+  const subDiv = document.getElementById("mySubmissions");
+  subDiv.innerHTML = "";
+  if (subSnap.empty) subDiv.innerHTML = "<p>No submissions yet</p>";
+  subSnap.forEach(doc => {
+    const d = doc.data();
+    subDiv.innerHTML += `<div class="card"><strong>${d.assignmentTitle}</strong><p>${d.text}</p><small>${d.grade? 'Grade: ' + d.grade : 'Pending'}</small></div>`;
+  });
+}
+
+async function loadTeacherData() {
+  const assignSnap = await getDocs(collection(db, "assignments"));
+  const subSnap = await getDocs(collection(db, "submissions"));
+  const studentSnap = await getDocs(collection(db, "students"));
+
+  const studentDiv = document.getElementById("studentList");
+  studentDiv.innerHTML = "";
+  studentSnap.forEach(doc => {
+    const d = doc.data();
+    studentDiv.innerHTML += `<div class="card">${d.name} - Passcode: ${d.passcode}</div>`;
+  });
+
+  const subDiv = document.getElementById("allSubmissions");
+  subDiv.innerHTML = "";
+  subSnap.forEach(doc => {
+    const d = doc.data();
+    subDiv.innerHTML += `<div class="card"><strong>${d.studentName}</strong>: ${d.assignmentTitle}<p>${d.text}</p></div>`;
+  });
+}
+
+function loadDropdownContent() {
+  document.getElementById("spelling").innerHTML = "<p>Spelling: Environment, Responsibility, Achievement</p>";
+  document.getElementById("maths").innerHTML = "<p>25 × 4 =?<br>Answer: 100</p>";
+  document.getElementById("grammar").innerHTML = "<p>Identify the noun in: The cat sat on the mat<br>Answer: cat, mat</p>";
+  document.getElementById("science").innerHTML = "<p>Water boils at 100°C</p>";
+  document.getElementById("civic").innerHTML = "<p>Nigeria gained independence in 1960</p>";
+  document.getElementById("story").innerHTML = "<p>Once upon a time, a tortoise and a hare had a race...</p>";
+}
+
+function startSubjectQuiz() {
+  currentSubject = document.getElementById("subjectSelect").value;
+  if (!currentSubject) return;
+  currentQIndex = 0;
+  score = 0;
+  answered = false;
+  document.getElementById("quizArea").classList.remove("hidden");
+  document.getElementById("quizResult").classList.add("hidden");
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = quizBank[currentSubject][currentQIndex];
+  const progress = ((currentQIndex) / quizBank[currentSubject].length) * 100;
+  document.getElementById("progressFill").style.width = progress + "%";
+
+  let html = `<h4>Question ${currentQIndex + 1} of ${quizBank[currentSubject].length}</h4>`;
+  html += `<p><strong>${q.q}</strong></p>`;
+  q.opts.forEach((opt, i) => {
+    html += `<div class="quiz-option" onclick="selectAnswer(${i})">${opt}</div>`;
+  });
+  html += `<div id="feedback" class="feedback"></div>`;
+  document.getElementById("questionBox").innerHTML = html;
+}
+
+window.selectAnswer = function(choice) {
+  if (answered) return;
+  answered = true;
+  const q = quizBank[currentSubject][currentQIndex];
+  const options = document.querySelectorAll(".quiz-option");
+  const feedback = document.getElementById("feedback");
+
+  options.forEach((opt, i) => {
+    opt.style.pointerEvents = "none";
+    if (i === q.ans) opt.classList.add("correct");
+    if (i === choice && i!== q.ans) opt.classList.add("wrong");
+  });
+
+  if (choice === q.ans) {
+    score++;
+    feedback.textContent = "Correct!";
+    feedback.className = "feedback correct";
+  } else {
+    feedback.textContent = `Wrong! Correct answer: ${q.opts[q.ans]}`;
+    feedback.className = "feedback wrong";
+  }
+
+  setTimeout(nextQuestion, 1500);
+}
+
+function nextQuestion() {
+  currentQIndex++;
+  answered = false;
+  if (currentQIndex >= quizBank[currentSubject].length) {
+    showResult();
+  } else {
+    showQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById("progressFill").style.width = "100%";
+  document.getElementById("questionBox").innerHTML = "";
+  const resultDiv = document.getElementById("quizResult");
+  resultDiv.classList.remove("hidden");
+  resultDiv.innerHTML = `<h3>Quiz Complete!</h3><p class="score-badge">Score: ${score}/${quizBank[currentSubject].length}</p>`;
+}
+
+window.postAssignment = async function() {
+  const subject = document.getElementById("assignSubject").value;
+  const title = document.getElementById("assignTitle").value;
+  const desc = document.getElementById("assignDesc").value;
+  if (!title) return alert("Enter a title");
+  await addDoc(collection(db, "assignments"), {subject, title, desc, createdAt: serverTimestamp()});
+  document.getElementById("teacherMsg").style.display = "block";
+  setTimeout(() => document.getElementById("teacherMsg").style.display = "none", 2000);
+  loadTeacherData();
+}
+
+window.submitAssignment = async function() {
+  const assignId = document.getElementById("assignSelect").value;
+  const text = document.getElementById("submissionText").value;
+  if (!text) return alert("Enter your answer");
+  await addDoc(collection(db, "submissions"), {
+    assignmentId: assignId,
+    assignmentTitle: document.getElementById("assignSelect").selectedOptions[0].text,
+    studentId: localStorage.getItem("studentId"),
+    studentName: localStorage.getItem("studentName"),
+    text,
+    submittedAt: serverTimestamp()
+  });
+  alert("Submitted!");
+  document.getElementById("submissionText").value = "";
+  loadStudentData();
+}
+
+function loadMessages(role) {
+  if (unsubscribeMessages) unsubscribeMessages();
+  unsubscribeMessages = onSnapshot(query(collection(db, "messages"), orderBy("sentAt")), snap => {
+    const box = role === 'student'? document.getElementById("studentMsgBox") : document.getElementById("teacherMsgBox");
+    box.innerHTML = "";
+    snap.forEach(doc => {
+      const d = doc.data();
+      const cls = d.from === role? role : (role === 'student'? 'teacher' : 'student');
+      box.innerHTML += `<div class="msg ${cls}">${d.text}</div>`;
+    });
+  });
+}
+
+window.sendMessage = async function(from) {
+  const input = from === 'student'? document.getElementById("studentMsgInput") : document.getElementById("teacherMsgInput");
+  const text = input.value;
+  if (!text) return;
+  await addDoc(collection(db, "messages"), {text, from, sentAt: serverTimestamp()});
+  input.value = "";
+}
+
+window.showBrainQ = function() {
+  document.getElementById("brainQ").innerHTML = "<p>What has keys but can't open doors?</p>";
+  document.getElementById("brainA").innerHTML = "A piano";
+  document.getElementById("brainBtn").style.display = "inline-block";
+}
+
+window.showBrainA = function() {
+  document.getElementById("brainA").style.display = "block";
+}
+
+window.showPastQ = function(subj) {
+  document.getElementById("pastQ").innerHTML = subj === "maths"? "<p>Q: 12 × 12 =?<br>A: 144</p>" : "<p>Q: Synonym for happy?<br>A: Joyful</p>";
+}
+
+window.addStudent = async function() {
+  const name = document.getElementById("newStudentName").value;
+  const pass = document.getElementById("newStudentPass").value;
+  if (!name ||!pass) return alert("Fill both fields");
+  await addDoc(collection(db, "students"), {name, passcode: pass});
+  alert("Student added");
+  loadStudents();
+  loadTeacherData();
+}
+</script>
+</body>
+</html>
