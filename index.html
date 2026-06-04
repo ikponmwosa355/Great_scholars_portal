@@ -1,5 +1,4 @@
 
-<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -27,7 +26,7 @@
       background: linear-gradient(135deg, #e3f2fd 0%, #f5f7fa 100%);
       color: var(--text);
     }
-  .hidden { display: none; }
+ .hidden { display: none; }
     input, select, button, textarea {
       padding: 12px;
       margin: 8px 0;
@@ -51,9 +50,11 @@
       border-radius: 8px;
     }
     button:hover { background: var(--primary-dark); }
-  .btn-accent { background: var(--accent); }
-  .btn-accent:hover { background: var(--accent-dark); }
-  .card {
+   .btn-accent { background: var(--accent); }
+   .btn-accent:hover { background: var(--accent-dark); }
+   .btn-danger { background: var(--danger); }
+   .btn-danger:hover { background: #d32f2f; }
+ .card {
       border-left: 5px solid var(--accent);
       padding: 15px;
       margin: 10px 0;
@@ -67,13 +68,13 @@
       padding-bottom: 8px;
       margin-top: 20px;
     }
-  .header {
+ .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
-  .section {
+ .section {
       background: var(--card);
       padding: 20px;
       border-radius: 12px;
@@ -81,7 +82,7 @@
       border-top: 4px solid var(--primary);
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-  .back-btn {
+ .back-btn {
       background: none;
       border: none;
       color: var(--accent);
@@ -91,8 +92,8 @@
       padding: 0;
       width: auto;
     }
-  .back-btn:hover { color: var(--accent-dark); }
-  .msg-box {
+ .back-btn:hover { color: var(--accent-dark); }
+ .msg-box {
       max-height: 300px;
       overflow-y: auto;
       padding: 10px;
@@ -100,12 +101,11 @@
       border-radius: 8px;
       border: 1px solid #bbdefb;
     }
-  .msg.teacher { background: #bbdefb; align-self: flex-end; margin-left: auto; }
-  .msg.student { background: #c8e6c9; }
-  .row { display: flex; gap: 10px; }
-  .row input { flex: 1; }
-  .row button { width: auto; }
-
+ .msg.teacher { background: #bbdefb; align-self: flex-end; margin-left: auto; }
+ .msg.student { background: #c8e6c9; }
+ .row { display: flex; gap: 10px; }
+ .row input { flex: 1; }
+ .row button { width: auto; }
     details {
       margin-bottom: 15px;
       border: 1px solid #ddd;
@@ -119,13 +119,21 @@
       cursor: pointer;
       color: #333;
     }
-  .answer {
+ .answer {
       margin-top: 8px;
       padding: 8px;
       background: #e8f5e9;
       border-radius: 5px;
       display: none;
     }
+ .success-msg {
+      display: none;
+      color: green;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+ .action-btns { display: flex; gap: 8px; margin-top: 8px; }
+ .action-btns button { width: auto; padding: 6px 12px; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -144,7 +152,6 @@
     <h2>Teacher Login</h2>
     <input type="password" id="teacherPass" placeholder="Teacher passcode">
     <button onclick="teacherLogin()">Login</button>
-    
   </div>
 </div>
 
@@ -156,6 +163,13 @@
 
   <div class="section">
     <h3>Available Assignments</h3>
+    <select id="subjectFilterStudent" onchange="loadStudentData()">
+      <option value="">All Subjects</option>
+      <option value="Math">Math</option>
+      <option value="Science">Science</option>
+      <option value="English">English</option>
+      <option value="History">History</option>
+    </select>
     <div id="assignmentsList"><p>Loading...</p></div>
   </div>
 
@@ -189,9 +203,18 @@
 
   <div class="section">
     <h3>Post New Assignment</h3>
+    <!-- 4. Subject dropdown -->
+    <select id="assignSubject">
+      <option value="Math">Math</option>
+      <option value="Science">Science</option>
+      <option value="English">English</option>
+      <option value="History">History</option>
+    </select>
     <input type="text" id="assignTitle" placeholder="Assignment title">
     <textarea id="assignDesc" placeholder="Description" rows="3"></textarea>
     <button onclick="postAssignment()">Post Assignment</button>
+    <!-- 2. Teacher message checkmark -->
+    <div id="teacherMsg" class="success-msg">✓ Assignment posted successfully</div>
   </div>
 
   <div class="section">
@@ -225,7 +248,6 @@
 <!-- Learning Hub Dropdowns -->
 <div class="section">
   <h2>🧠 Learning Hub</h2>
-
   <details>
     <summary>🧠 Brain Gym - Riddles & Brain Teasers</summary>
     <div class="content">
@@ -240,32 +262,26 @@
       <div id="brainA" class="answer"></div>
     </div>
   </details>
-
   <details>
     <summary>📝 Daily Spelling Bee</summary>
     <div class="content" id="spelling"></div>
   </details>
-
   <details>
     <summary>➕ Quick Maths Challenge</summary>
     <div class="content" id="maths"></div>
   </details>
-
   <details>
     <summary>📘 English Grammar Drills</summary>
     <div class="content" id="grammar"></div>
   </details>
-
   <details>
     <summary>🔬 Science Facts Corner</summary>
     <div class="content" id="science"></div>
   </details>
-
   <details>
     <summary>🇳🇬 Civic & Social Studies</summary>
     <div class="content" id="civic"></div>
   </details>
-
   <details>
     <summary>📚 Past Question Bank</summary>
     <div class="content">
@@ -277,12 +293,10 @@
       <div id="pastQ"></div>
     </div>
   </details>
-
   <details>
     <summary>📖 Story Time</summary>
     <div class="content" id="story"></div>
   </details>
-
   <details>
     <summary>✏️ Homework Help</summary>
     <div class="content">
@@ -293,7 +307,6 @@
       Step 3: 2/4 + 1/4 = 3/4</p>
     </div>
   </details>
-
   <details>
     <summary>📢 Class Notice Board</summary>
     <div class="content" id="noticeBoard">
@@ -396,8 +409,16 @@ window.logout = function() {
   showView('login');
 }
 
+// 1. Load student data with subject filter
 async function loadStudentData() {
-  const assignSnap = await getDocs(collection(db, "assignments"));
+  const subjectFilter = document.getElementById("subjectFilterStudent")?.value;
+
+  let q = collection(db, "assignments");
+  if (subjectFilter) {
+    q = query(collection(db, "assignments"), where("subject", "==", subjectFilter));
+  }
+
+  const assignSnap = await getDocs(q);
   const assignDiv = document.getElementById("assignmentsList");
   const assignSelect = document.getElementById("assignSelect");
   assignDiv.innerHTML = "";
@@ -411,8 +432,8 @@ async function loadStudentData() {
   assignSnap.forEach(doc => {
     const data = doc.data();
     const desc = data.desc || data.description || "";
-    assignDiv.innerHTML += `<div class="card"><strong>${data.title}</strong><p>${desc}</p></div>`;
-    assignSelect.innerHTML += `<option value="${doc.id}">${data.title}</option>`;
+    assignDiv.innerHTML += `<div class="card"><strong>[${data.subject}] ${data.title}</strong><p>${desc}</p></div>`;
+    assignSelect.innerHTML += `<option value="${doc.id}">[${data.subject}] ${data.title}</option>`;
   });
 
   const subSnap = await getDocs(query(
@@ -424,25 +445,56 @@ async function loadStudentData() {
   subDiv.innerHTML = "";
   if (subSnap.empty) subDiv.innerHTML = "<p>No submissions yet</p>";
   subSnap.forEach(doc => {
-    subDiv.innerHTML += `<div class="card">${doc.data().text}</div>`;
+    const data = doc.data();
+    subDiv.innerHTML += `
+      <div class="card">
+        <strong>${data.assignmentTitle}</strong>
+        <p>${data.text}</p>
+        <div class="action-btns">
+          <button onclick="editSubmission('${doc.id}', '${data.text.replace(/'/g, "\\'")}')">Edit</button>
+          <button class="btn-danger" onclick="deleteSubmission('${doc.id}')">Delete</button>
+        </div>
+      </div>`;
   });
 }
 
+// 1. Submit assignment and refresh instantly
 window.submitAssignment = async function() {
   const text = document.getElementById("submissionText").value;
   const assignId = document.getElementById("assignSelect").value;
   if (!text) return alert("Please enter your answer");
 
+  const assignDoc = await getDocs(query(collection(db, "assignments"), where("__name__", "==", assignId)));
+  const assignTitle = assignDoc.empty? "Unknown" : assignDoc.docs[0].data().title;
+
   await addDoc(collection(db, "submissions"), {
     studentId: localStorage.getItem("studentId"),
     studentName: localStorage.getItem("studentName"),
     assignmentId: assignId,
+    assignmentTitle: assignTitle,
     text: text,
     submittedAt: serverTimestamp()
   });
-  alert("Submitted successfully!");
+
   document.getElementById("submissionText").value = "";
-  loadStudentData();
+  loadStudentData(); // refresh instantly
+}
+
+// 3. Edit submission
+window.editSubmission = async function(id, oldText) {
+  const newText = prompt("Edit your submission:", oldText);
+  if (newText!== null && newText.trim()!== "") {
+    await updateDoc(doc(db, "submissions", id), { text: newText });
+    loadStudentData();
+  }
+}
+
+// 3. Delete submission
+window.deleteSubmission = async function(id) {
+  if (confirm("Delete this submission?")) {
+    await deleteDoc(doc(db, "submissions", id));
+    loadStudentData();
+  }
 }
 
 async function loadTeacherData() {
@@ -469,8 +521,32 @@ async function loadTeacherData() {
   if (subSnap.empty) subDiv.innerHTML = "<p>No submissions yet</p>";
   subSnap.forEach(doc => {
     const data = doc.data();
-    subDiv.innerHTML += `<div class="card"><strong>${data.studentName}</strong><p>${data.text}</p></div>`;
+    subDiv.innerHTML += `
+      <div class="card">
+        <strong>${data.studentName}</strong> - ${data.assignmentTitle}
+        <p>${data.text}</p>
+        <div class="action-btns">
+          <button onclick="editTeacherSubmission('${doc.id}', '${data.text.replace(/'/g, "\\'")}')">Edit</button>
+          <button class="btn-danger" onclick="deleteTeacherSubmission('${doc.id}')">Delete</button>
+        </div>
+      </div>`;
   });
+}
+
+// 3. Teacher edit/delete submissions
+window.editTeacherSubmission = async function(id, oldText) {
+  const newText = prompt("Edit submission:", oldText);
+  if (newText!== null && newText.trim()!== "") {
+    await updateDoc(doc(db, "submissions", id), { text: newText });
+    loadTeacherData();
+  }
+}
+
+window.deleteTeacherSubmission = async function(id) {
+  if (confirm("Delete this submission?")) {
+    await deleteDoc(doc(db, "submissions", id));
+    loadTeacherData();
+  }
 }
 
 window.manageStudent = async function(id, action) {
@@ -492,20 +568,52 @@ window.manageStudent = async function(id, action) {
   }
 }
 
+// 4. Post assignment with subject
 window.postAssignment = async function() {
   const title = document.getElementById("assignTitle").value;
   const desc = document.getElementById("assignDesc").value;
+  const subject = document.getElementById("assignSubject").value;
   if (!title) return alert("Enter assignment title");
 
   await addDoc(collection(db, "assignments"), {
     title: title,
     desc: desc,
+    subject: subject,
     createdAt: serverTimestamp()
   });
-  alert("Assignment posted!");
+
+  // 2. Show checkmark message
+  showTeacherMessage();
+
   document.getElementById("assignTitle").value = "";
   document.getElementById("assignDesc").value = "";
   loadTeacherData();
+}
+
+// 2. Show teacher checkmark message
+function showTeacherMessage() {
+  const msg = document.getElementById('teacherMsg');
+  msg.style.display = 'block';
+  setTimeout(() => {
+    msg.style.display = 'none';
+  }, 3000);
+}
+
+// 3. Edit/Delete assignments
+window.editAssignment = async function(id, oldTitle, oldDesc) {
+  const newTitle = prompt("Edit title:", oldTitle);
+  const newDesc = prompt("Edit description:", oldDesc);
+  if (newTitle!== null) {
+    await updateDoc(doc(db, "assignments", id), { title: newTitle, desc: newDesc });
+    loadTeacherData();
+  }
+}
+
+window.deleteAssignment = async function(id) {
+  if (confirm("Delete this assignment?")) {
+    await deleteDoc(doc(db, "assignments", id));
+    loadTeacherData();
+  }
 }
 
 window.addStudent = async function() {
@@ -563,7 +671,7 @@ document.getElementById("msgStudentSelect")?.addEventListener("change", () => {
   loadMessages('teacher');
 });
 
-// Dropdown Content - 4 items each
+// Learning Hub content unchanged
 const brainData = {
   riddle: [
     {q:"I have hands but can't clap. What am I?",a:"A clock"},
@@ -611,49 +719,41 @@ function loadDropdownContent() {
     <p><b>3. Exercise</b> - Physical activity for health. <br><i>We exercise every morning.</i></p>
     <p><b>4. Library</b> - A place with many books. <br><i>I borrowed a book from the library.</i></p>
   `;
-
   document.getElementById('maths').innerHTML = `
     <p>1. 25 + 17 = <b>42</b></p>
     <p>2. 48 ÷ 6 = <b>8</b></p>
     <p>3. 3/4 of 20 = <b>15</b></p>
     <p>4. 12 x 7 = <b>84</b></p>
   `;
-
   document.getElementById('grammar').innerHTML = `
     <p><b>Noun:</b> A naming word. Example: Dog, School, Lagos</p>
     <p><b>Verb:</b> An action word. Example: Run, Eat, Write</p>
     <p><b>Adjective:</b> Describes a noun. Example: Big, Red, Happy</p>
     <p><b>Adverb:</b> Describes a verb. Example: Quickly, Slowly, Well</p>
   `;
-
   document.getElementById('science').innerHTML = `
     <p>💡 The human body has 206 bones.</p>
     <p>💡 Water boils at 100°C.</p>
     <p>💡 Plants make food using sunlight in a process called photosynthesis.</p>
     <p>💡 The Earth has one natural satellite called the Moon.</p>
   `;
-
   document.getElementById('civic').innerHTML = `
     <p><b>Nigeria's Capital:</b> Abuja</p>
     <p><b>National Animal:</b> Eagle</p>
     <p><b>National Flower:</b> Costus spectabilis</p>
     <p><b>Independence Day:</b> 1st October 1960</p>
   `;
-
   document.getElementById('story').innerHTML = `
     <p><b>1. The Tortoise and the Hare</b><br>
     The hare was fast but proud. The tortoise was slow but steady.
     They had a race. The hare slept, and the tortoise won.
     <br><i>Moral: Slow and steady wins the race.</i></p>
-
     <p><b>2. The Boy Who Cried Wolf</b><br>
     A boy kept lying that a wolf was coming. When it really came, nobody believed him.
     <br><i>Moral: Always tell the truth.</i></p>
-
     <p><b>3. The Ant and the Grasshopper</b><br>
     The ant worked hard all summer storing food. The grasshopper played and had nothing for winter.
     <br><i>Moral: Work hard today for tomorrow.</i></p>
-
     <p><b>4. The Lion and the Mouse</b><br>
     A mouse helped a lion who was trapped. The lion learned that even small friends matter.
     <br><i>Moral: No act of kindness is ever too small.</i></p>
