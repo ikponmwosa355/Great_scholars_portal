@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Great Scholars Portal</title>
+
   <style>
     :root {
       --primary: #4CAF50;
@@ -18,19 +19,19 @@
       --muted: #666;
     }
     * { box-sizing: border-box; }
-    body { 
-      font-family: 'Segoe UI', Arial, sans-serif; 
-      padding: 20px; 
-      max-width: 900px; 
-      margin: auto; 
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
       background: linear-gradient(135deg, #e3f2fd 0%, #f5f7fa 100%);
       color: var(--text);
     }
-    .hidden { display: none; }
-    input, select, button, textarea { 
-      padding: 12px; 
-      margin: 8px 0; 
-      width: 100%; 
+  .hidden { display: none; }
+    input, select, button, textarea {
+      padding: 12px;
+      margin: 8px 0;
+      width: 100%;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
       font-size: 14px;
@@ -41,57 +42,57 @@
       outline: none;
       box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
     }
-    button { 
-      cursor: pointer; 
-      background: var(--primary); 
-      color: white; 
-      border: none; 
+    button {
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      border: none;
       font-weight: bold;
       border-radius: 8px;
     }
     button:hover { background: var(--primary-dark); }
-    .btn-accent { background: var(--accent); }
-    .btn-accent:hover { background: var(--accent-dark); }
-    .card { 
+  .btn-accent { background: var(--accent); }
+  .btn-accent:hover { background: var(--accent-dark); }
+  .card {
       border-left: 5px solid var(--accent);
-      padding: 15px; 
-      margin: 10px 0; 
-      border-radius: 8px; 
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
       background: var(--card);
       box-shadow: 0 3px 8px rgba(0,0,0,0.08);
     }
-    h2, h3 { 
-      color: var(--accent-dark); 
+    h2, h3 {
+      color: var(--accent-dark);
       border-bottom: 2px solid var(--accent);
       padding-bottom: 8px;
-      margin-top: 20px; 
+      margin-top: 20px;
     }
-    .header { 
-      display: flex; 
-      justify-content: space-between; 
+  .header {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px; 
+      margin-bottom: 20px;
     }
-    .section { 
-      background: var(--card); 
-      padding: 20px; 
-      border-radius: 12px; 
-      margin: 15px 0; 
+  .section {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 15px 0;
       border-top: 4px solid var(--primary);
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .back-btn { 
-      background: none; 
-      border: none; 
-      color: var(--accent); 
+  .back-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
       font-size: 15px;
       font-weight: bold;
       cursor: pointer;
       padding: 0;
       width: auto;
     }
-    .back-btn:hover { color: var(--accent-dark); }
-    .msg-box {
+  .back-btn:hover { color: var(--accent-dark); }
+  .msg-box {
       max-height: 300px;
       overflow-y: auto;
       padding: 10px;
@@ -99,11 +100,32 @@
       border-radius: 8px;
       border: 1px solid #bbdefb;
     }
-    .msg.teacher { background: #bbdefb; align-self: flex-end; margin-left: auto; }
-    .msg.student { background: #c8e6c9; }
-    .row { display: flex; gap: 10px; }
-    .row input { flex: 1; }
-    .row button { width: auto; }
+  .msg.teacher { background: #bbdefb; align-self: flex-end; margin-left: auto; }
+  .msg.student { background: #c8e6c9; }
+  .row { display: flex; gap: 10px; }
+  .row input { flex: 1; }
+  .row button { width: auto; }
+
+    details {
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      background: white;
+    }
+    summary {
+      font-weight: bold;
+      font-size: 17px;
+      cursor: pointer;
+      color: #333;
+    }
+  .answer {
+      margin-top: 8px;
+      padding: 8px;
+      background: #e8f5e9;
+      border-radius: 5px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -131,7 +153,7 @@
     <button class="back-btn" onclick="logout()">← Logout</button>
     <h2 id="studentWelcome"></h2>
   </div>
-  
+
   <div class="section">
     <h3>Available Assignments</h3>
     <div id="assignmentsList"><p>Loading...</p></div>
@@ -200,6 +222,88 @@
   </div>
 </div>
 
+<!-- Learning Hub Dropdowns -->
+<div class="section">
+  <h2>🧠 Learning Hub</h2>
+
+  <details>
+    <summary>🧠 Brain Gym - Riddles & Brain Teasers</summary>
+    <div class="content">
+      <select id="brainType" onchange="showBrainQ()">
+        <option value="">Choose a category</option>
+        <option value="riddle">Riddles</option>
+        <option value="idiom">Idioms</option>
+        <option value="brainteaser">Brain Teasers</option>
+      </select>
+      <div id="brainQ"></div>
+      <button id="brainBtn" onclick="showBrainA()" style="display:none;">Show Answer</button>
+      <div id="brainA" class="answer"></div>
+    </div>
+  </details>
+
+  <details>
+    <summary>📝 Daily Spelling Bee</summary>
+    <div class="content" id="spelling"></div>
+  </details>
+
+  <details>
+    <summary>➕ Quick Maths Challenge</summary>
+    <div class="content" id="maths"></div>
+  </details>
+
+  <details>
+    <summary>📘 English Grammar Drills</summary>
+    <div class="content" id="grammar"></div>
+  </details>
+
+  <details>
+    <summary>🔬 Science Facts Corner</summary>
+    <div class="content" id="science"></div>
+  </details>
+
+  <details>
+    <summary>🇳🇬 Civic & Social Studies</summary>
+    <div class="content" id="civic"></div>
+  </details>
+
+  <details>
+    <summary>📚 Past Question Bank</summary>
+    <div class="content">
+      <select onchange="showPastQ(this.value)">
+        <option value="">Choose Subject</option>
+        <option value="maths">Mathematics</option>
+        <option value="english">English</option>
+      </select>
+      <div id="pastQ"></div>
+    </div>
+  </details>
+
+  <details>
+    <summary>📖 Story Time</summary>
+    <div class="content" id="story"></div>
+  </details>
+
+  <details>
+    <summary>✏️ Homework Help</summary>
+    <div class="content">
+      <p><b>Example: Fractions</b><br>
+      Q: What is 1/2 + 1/4?<br>
+      Step 1: Find common denominator 4<br>
+      Step 2: 1/2 = 2/4<br>
+      Step 3: 2/4 + 1/4 = 3/4</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>📢 Class Notice Board</summary>
+    <div class="content" id="noticeBoard">
+      <p><b>Assignment Due:</b> Maths Worksheet 5 - Friday<br>
+      <b>Exam Date:</b> English Test - 15th Oct<br>
+      <b>Notice:</b> Remember to bring your textbooks daily</p>
+    </div>
+  </details>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -225,6 +329,7 @@ function showView(view) {
 window.addEventListener('load', () => {
   loadStudents();
   checkAuth();
+  loadDropdownContent();
 });
 
 function checkAuth() {
@@ -297,12 +402,12 @@ async function loadStudentData() {
   const assignSelect = document.getElementById("assignSelect");
   assignDiv.innerHTML = "";
   assignSelect.innerHTML = "";
-  
+
   if (assignSnap.empty) {
     assignDiv.innerHTML = "<p>No assignments posted yet</p>";
     return;
   }
-  
+
   assignSnap.forEach(doc => {
     const data = doc.data();
     const desc = data.desc || data.description || "";
@@ -311,7 +416,7 @@ async function loadStudentData() {
   });
 
   const subSnap = await getDocs(query(
-    collection(db, "submissions"), 
+    collection(db, "submissions"),
     where("studentId", "==", localStorage.getItem("studentId")),
     orderBy("submittedAt", "desc")
   ));
@@ -327,7 +432,7 @@ window.submitAssignment = async function() {
   const text = document.getElementById("submissionText").value;
   const assignId = document.getElementById("assignSelect").value;
   if (!text) return alert("Please enter your answer");
-  
+
   await addDoc(collection(db, "submissions"), {
     studentId: localStorage.getItem("studentId"),
     studentName: localStorage.getItem("studentName"),
@@ -344,7 +449,7 @@ async function loadTeacherData() {
   const studentSnap = await getDocs(collection(db, "students"));
   const studentDiv = document.getElementById("studentList");
   studentDiv.innerHTML = "";
-  
+
   studentSnap.forEach(doc => {
     const data = doc.data();
     studentDiv.innerHTML += `
@@ -391,7 +496,7 @@ window.postAssignment = async function() {
   const title = document.getElementById("assignTitle").value;
   const desc = document.getElementById("assignDesc").value;
   if (!title) return alert("Enter assignment title");
-  
+
   await addDoc(collection(db, "assignments"), {
     title: title,
     desc: desc,
@@ -406,8 +511,8 @@ window.postAssignment = async function() {
 window.addStudent = async function() {
   const name = document.getElementById("newStudentName").value;
   const pass = document.getElementById("newStudentPass").value;
-  if (!name || !pass) return alert("Enter name and passcode");
-  
+  if (!name ||!pass) return alert("Enter name and passcode");
+
   await addDoc(collection(db, "students"), {
     name: name,
     passcode: pass
@@ -419,16 +524,14 @@ window.addStudent = async function() {
   loadStudents();
 }
 
-let currentChatStudent = null;
-
 window.sendMessage = async function(role) {
-  const input = role === 'teacher' ? document.getElementById("teacherMsgInput") : document.getElementById("studentMsgInput");
+  const input = role === 'teacher'? document.getElementById("teacherMsgInput") : document.getElementById("studentMsgInput");
   const text = input.value;
   if (!text) return;
-  
-  const studentId = role === 'teacher' ? document.getElementById("msgStudentSelect").value : localStorage.getItem("studentId");
+
+  const studentId = role === 'teacher'? document.getElementById("msgStudentSelect").value : localStorage.getItem("studentId");
   if (!studentId) return alert("Select a student first");
-  
+
   await addDoc(collection(db, "messages"), {
     studentId: studentId,
     sender: role,
@@ -439,14 +542,14 @@ window.sendMessage = async function(role) {
 }
 
 function loadMessages(role) {
-  const studentId = role === 'teacher' ? document.getElementById("msgStudentSelect").value : localStorage.getItem("studentId");
+  const studentId = role === 'teacher'? document.getElementById("msgStudentSelect").value : localStorage.getItem("studentId");
   if (!studentId) return;
-  
+
   if (unsubscribeMessages) unsubscribeMessages();
-  
+
   const q = query(collection(db, "messages"), where("studentId", "==", studentId), orderBy("timestamp"));
   unsubscribeMessages = onSnapshot(q, (snap) => {
-    const box = role === 'teacher' ? document.getElementById("teacherMsgBox") : document.getElementById("studentMsgBox");
+    const box = role === 'teacher'? document.getElementById("teacherMsgBox") : document.getElementById("studentMsgBox");
     box.innerHTML = "";
     snap.forEach(doc => {
       const data = doc.data();
@@ -459,8 +562,123 @@ function loadMessages(role) {
 document.getElementById("msgStudentSelect")?.addEventListener("change", () => {
   loadMessages('teacher');
 });
+
+// Dropdown Content - 4 items each
+const brainData = {
+  riddle: [
+    {q:"I have hands but can't clap. What am I?",a:"A clock"},
+    {q:"What has a head and a tail but no body?",a:"A coin"},
+    {q:"What gets wetter the more it dries?",a:"A towel"},
+    {q:"I'm full of keys but can't open a door. What am I?",a:"A piano"}
+  ],
+  idiom: [
+    {q:"What does 'a piece of cake' mean?",a:"Something very easy"},
+    {q:"What does 'break the ice' mean?",a:"To start a conversation"},
+    {q:"What does 'hit the books' mean?",a:"To start studying hard"},
+    {q:"What does 'under the weather' mean?",a:"Feeling sick"}
+  ],
+  brainteaser: [
+    {q:"What comes once in a minute, twice in a moment?",a:"The letter M"},
+    {q:"I speak without a mouth. What am I?",a:"An echo"},
+    {q:"What has many keys but can't open a single lock?",a:"A piano"},
+    {q:"What can you catch but not throw?",a:"A cold"}
+  ]
+};
+let currentBrainA = "";
+
+function showBrainQ(){
+  const type = document.getElementById('brainType').value;
+  if(!type) return;
+  const arr = brainData[type];
+  const item = arr[Math.floor(Math.random()*arr.length)];
+  document.getElementById('brainQ').innerHTML = "<b>Q:</b> "+item.q;
+  currentBrainA = item.a;
+  document.getElementById('brainBtn').style.display = 'inline-block';
+  document.getElementById('brainA').style.display = 'none';
+}
+window.showBrainQ = showBrainQ;
+
+function showBrainA(){
+  document.getElementById('brainA').innerHTML = "<b>A:</b> "+currentBrainA;
+  document.getElementById('brainA').style.display = 'block';
+}
+window.showBrainA = showBrainA;
+
+function loadDropdownContent() {
+  document.getElementById('spelling').innerHTML = `
+    <p><b>1. Beautiful</b> - Pleasing to look at. <br><i>She wore a beautiful dress.</i></p>
+    <p><b>2. Knowledge</b> - Facts and information. <br><i>Reading gives you knowledge.</i></p>
+    <p><b>3. Exercise</b> - Physical activity for health. <br><i>We exercise every morning.</i></p>
+    <p><b>4. Library</b> - A place with many books. <br><i>I borrowed a book from the library.</i></p>
+  `;
+
+  document.getElementById('maths').innerHTML = `
+    <p>1. 25 + 17 = <b>42</b></p>
+    <p>2. 48 ÷ 6 = <b>8</b></p>
+    <p>3. 3/4 of 20 = <b>15</b></p>
+    <p>4. 12 x 7 = <b>84</b></p>
+  `;
+
+  document.getElementById('grammar').innerHTML = `
+    <p><b>Noun:</b> A naming word. Example: Dog, School, Lagos</p>
+    <p><b>Verb:</b> An action word. Example: Run, Eat, Write</p>
+    <p><b>Adjective:</b> Describes a noun. Example: Big, Red, Happy</p>
+    <p><b>Adverb:</b> Describes a verb. Example: Quickly, Slowly, Well</p>
+  `;
+
+  document.getElementById('science').innerHTML = `
+    <p>💡 The human body has 206 bones.</p>
+    <p>💡 Water boils at 100°C.</p>
+    <p>💡 Plants make food using sunlight in a process called photosynthesis.</p>
+    <p>💡 The Earth has one natural satellite called the Moon.</p>
+  `;
+
+  document.getElementById('civic').innerHTML = `
+    <p><b>Nigeria's Capital:</b> Abuja</p>
+    <p><b>National Animal:</b> Eagle</p>
+    <p><b>National Flower:</b> Costus spectabilis</p>
+    <p><b>Independence Day:</b> 1st October 1960</p>
+  `;
+
+  document.getElementById('story').innerHTML = `
+    <p><b>1. The Tortoise and the Hare</b><br>
+    The hare was fast but proud. The tortoise was slow but steady.
+    They had a race. The hare slept, and the tortoise won.
+    <br><i>Moral: Slow and steady wins the race.</i></p>
+
+    <p><b>2. The Boy Who Cried Wolf</b><br>
+    A boy kept lying that a wolf was coming. When it really came, nobody believed him.
+    <br><i>Moral: Always tell the truth.</i></p>
+
+    <p><b>3. The Ant and the Grasshopper</b><br>
+    The ant worked hard all summer storing food. The grasshopper played and had nothing for winter.
+    <br><i>Moral: Work hard today for tomorrow.</i></p>
+
+    <p><b>4. The Lion and the Mouse</b><br>
+    A mouse helped a lion who was trapped. The lion learned that even small friends matter.
+    <br><i>Moral: No act of kindness is ever too small.</i></p>
+  `;
+}
+
+const pastQData = {
+  maths: [
+    "What is 15 x 4? <br><b>Answer:</b> 60",
+    "Solve: 100 - 37 <br><b>Answer:</b> 63",
+    "What is 144 ÷ 12? <br><b>Answer:</b> 12",
+    "Find 2/5 of 50 <br><b>Answer:</b> 20"
+  ],
+  english: [
+    "What is the opposite of 'Happy'? <br><b>Answer:</b> Sad",
+    "Identify the noun: 'The boy ran fast' <br><b>Answer:</b> boy",
+    "Change to plural: 'Child' <br><b>Answer:</b> Children",
+    "What is the past tense of 'Go'? <br><b>Answer:</b> Went"
+  ]
+};
+function showPastQ(sub){
+  if(!sub) return;
+  document.getElementById('pastQ').innerHTML = pastQData[sub].join("<br><br>");
+}
+window.showPastQ = showPastQ;
 </script>
 </body>
 </html>
-
-
